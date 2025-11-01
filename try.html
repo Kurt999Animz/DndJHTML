@@ -1,71 +1,44 @@
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>Character Sheet ⌜Kotobuki⌟</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-        /* === Fonts === */
         @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600&display=swap');
 
         * {
             user-select: none;
-            /* Standard */
             -webkit-user-select: none;
-            /* Chrome, Safari */
             -moz-user-select: none;
-            /* Firefox */
             -ms-user-select: none;
-            /* IE10+ */
         }
 
-        /* === Theme variables === */
         :root {
             --gold: #e8c27c;
             --gold-2: #f7e3b0;
             --panel-bg: rgba(38, 24, 12, 0.78);
             --text: #fdf7e2;
             --accent: #7fd6d2;
-            /* teal-blue accent */
             --glass-border: rgba(255, 230, 180, 0.18);
             --glow: 0 0 16px rgba(255, 220, 145, 0.22);
             --transition: 220ms cubic-bezier(.2, .9, .3, 1);
         }
 
-        /* Minimal transparent scrollbar (Chrome, Edge, Safari) */
-        body::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        body::-webkit-scrollbar-track {
-            background: transparent;
-            /* invisible track */
-        }
-
+        body::-webkit-scrollbar { width: 8px; }
+        body::-webkit-scrollbar-track { background: transparent; }
         body::-webkit-scrollbar-thumb {
             background: rgba(0, 0, 0, 0.35);
-            /* semi-transparent black thumb */
             border-radius: 10px;
             transition: background 0.3s ease, width 0.2s ease;
         }
-
         body::-webkit-scrollbar-thumb:hover {
             background: rgba(0, 0, 0, 0.55);
-            /* darker when hovered */
             width: 10px;
         }
+        body { scrollbar-width: thin; scrollbar-color: rgba(0, 0, 0, 0.4) transparent; }
 
-        /* Firefox */
-        body {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
-        }
-
-
-        /* === Base page / backdrop === */
-        html,
-        body {
+        html, body {
             height: 100%;
             width: 100%;
             margin: 0;
@@ -74,14 +47,13 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             color: var(--text);
-            background: url('assets/bg_interior_blur.jpg') center/cover no-repeat fixed;
+            background: linear-gradient(135deg, #0c0a08, #1a1610);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
         }
 
-        /* Title fade-in overlay */
         .title-screen {
             position: fixed;
             inset: 0;
@@ -93,20 +65,15 @@
             transition: opacity 500ms ease, visibility 500ms ease;
             backdrop-filter: blur(5px);
         }
-
         .title-screen::after {
             content: "";
-            /* required for pseudo-element to appear */
             position: absolute;
             inset: 0;
-            /* covers entire parent */
             background: black;
             z-index: 10000;
             animation: fadeOut 700ms forwards;
             animation-delay: 300ms;
-
         }
-
         .title-card {
             display: flex;
             flex-direction: column;
@@ -120,7 +87,6 @@
             text-align: center;
             animation: gobig 2500ms ease forwards;
         }
-
         .title-card h1 {
             margin: 0;
             font-family: 'Cinzel', serif;
@@ -129,40 +95,24 @@
             color: var(--gold-2);
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
         }
-
         .title-card p {
             margin: 0;
             color: rgba(255, 240, 210, 0.85);
             font-size: 14px;
         }
-
         @keyframes gobig {
-            from {
-                scale: 1;
-            }
-
-            to {
-                scale: 1.3
-            }
+            from { scale: 1; }
+            to { scale: 1.3 }
         }
-
         @keyframes fadeOut {
-            from {
-                opacity: 1
-            }
-
-            to {
-                opacity: 0
-            }
+            from { opacity: 1 }
+            to { opacity: 0 }
         }
-
         .title-screen.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
-
-        /* === Floating UI container (overrides original grid visuals) === */
         .ui-wrap {
             width: calc(100vw - 80px);
             max-width: 1600px;
@@ -182,12 +132,9 @@
             overflow: visible;
             transition: box-shadow var(--transition);
         }
-
         .ui-wrap:hover {
             box-shadow: 0 18px 60px rgba(0, 0, 0, 0.311), inset 0 0 40px 4rgba(59, 44, 14, 0.02);
         }
-
-        /* === Panels (original .section) === */
         .section {
             border-radius: 14px;
             border: 1px solid rgba(255, 240, 200, 0.06);
@@ -199,13 +146,10 @@
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.45);
             transition: transform var(--transition), box-shadow var(--transition);
         }
-
         .section:hover {
             transform: translateY(-4px);
             box-shadow: var(--glow);
         }
-
-        /* subtle header stripe */
         .section::before {
             content: '';
             display: block;
@@ -213,71 +157,24 @@
             background: linear-gradient(90deg, rgba(255, 215, 120, 0.14), rgba(127, 214, 210, 0.08));
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
         }
-
-        /* === Specific layout mapping (keeps your original grid positions) === */
-        .profile {
-            grid-column: 1 / 2;
-            grid-row: 1 / 2;
-        }
-
-        .stats-panel {
-            grid-column: 1 / 2;
-            grid-row: 2 / 3;
-        }
-
-        .center {
-            grid-column: 2 / 3;
-            grid-row: 1 / 3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .inventory-panel {
-            grid-column: 3 / 4;
-            grid-row: 1 / 2;
-        }
-
-        .equipment-panel {
-            grid-column: 3 / 4;
-            grid-row: 2 / 3;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        /* === Avatar / profile === */
-        .avatar-box {
-            padding: 18px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            box-sizing: border-box;
-        }
-
-        .avatar {
-            width: 100%;
-            display: flex;
-            gap: 14px;
-            align-items: center;
-        }
-
+        .profile { grid-column: 1 / 2; grid-row: 1 / 2; }
+        .stats-panel { grid-column: 1 / 2; grid-row: 2 / 3; }
+        .center { grid-column: 2 / 3; grid-row: 1 / 3; display: flex; align-items: center; justify-content: center; padding: 20px;}
+        .inventory-panel { grid-column: 3 / 4; grid-row: 1 / 2; }
+        .equipment-panel { grid-column: 3 / 4; grid-row: 2 / 3; display: flex; flex-direction: column; overflow-y: auto; }
+        .avatar-box { padding: 18px; display: flex; gap: 16px; align-items: center; box-sizing: border-box; }
+        .avatar { width: 100%; display: flex; gap: 14px; align-items: center; }
         .avatar img {
-            width: 220px;
-            height: 220px;
-            border-radius: 999px;
+            width: 220px; height: 220px; border-radius: 999px;
             border: 2px solid rgba(255, 230, 170, 0.12);
             object-fit: cover;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 18px rgba(255, 200, 120, 0.06);
             transition: transform var(--transition), box-shadow var(--transition);
         }
-
         .avatar img.glow {
             box-shadow: 0 20px 60px rgba(250, 200, 120, 0.12), 0 0 36px rgba(255, 210, 130, 0.12);
             filter: drop-shadow(0 0 14px rgba(255, 210, 130, 0.16));
         }
-
         .info {
             display: flex;
             flex-direction: column;
@@ -286,23 +183,11 @@
             color: var(--gold-2);
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
         }
-
-        .info strong {
-            color: var(--gold);
-            font-weight: 600;
-            margin-right: 6px;
-        }
-
-        /* === Stats panel (list style) === */
+        .info strong { color: var(--gold); font-weight: 600; margin-right: 6px; }
         .stats {
-            padding: 18px;
-            box-sizing: border-box;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+            padding: 18px; box-sizing: border-box; height: 100%;
+            display: flex; flex-direction: column; justify-content: flex-start;
         }
-
         .stats h2 {
             font-size: 18px;
             margin: 0 0 12px 0;
@@ -311,284 +196,101 @@
             border-bottom: 1px solid rgba(255, 240, 200, 0.05);
             padding-bottom: 10px;
         }
-
-        .stats ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            color: #f7f1da;
-        }
-
+        .stats ul { list-style: none; margin: 0; padding: 0; color: #f7f1da; }
         .stats li {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 6px;
-            font-size: 15px;
-            border-radius: 8px;
+            display: flex; justify-content: space-between;
+            padding: 8px 6px; font-size: 15px; border-radius: 8px;
             transition: background var(--transition);
         }
-
-        .stats li:hover {
-            background: linear-gradient(90deg, rgba(255, 230, 150, 0.02), rgba(127, 214, 210, 0.01));
-        }
-
-        /* === Center character showcase === */
+        .stats li:hover { background: linear-gradient(90deg, rgba(255, 230, 150, 0.02), rgba(127, 214, 210, 0.01)); }
         .character-showcase {
-            width: 500px;
-            height: 820px;
+            width: 500px; height: 820px;
             background: radial-gradient(circle at 50% 22%, rgba(255, 235, 180, 0.06), transparent 40%), rgba(0, 0, 0, 0.06);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: visible;
-            padding: 18px;
-            box-sizing: border-box;
-            border: 1px solid rgba(255, 230, 170, 0.03);
-            backdrop-filter: blur(2px);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: visible; padding: 18px; box-sizing: border-box;
+            border: 1px solid rgba(255, 230, 170, 0.03); backdrop-filter: blur(2px);
         }
-
-        /* floating portrait (uses user's assets/av) */
         .character-showcase .portrait-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 360px;
-            height: 560px;
-            border-radius: 18px;
-            pointer-events: none;
+            position: relative; display: flex; align-items: center; justify-content: center;
+            width: 360px; height: 560px; border-radius: 18px; pointer-events: none;
         }
-
         .portrait {
-            width: 320px;
-            height: auto;
-            border-radius: 12px;
-            transform-origin: center;
+            width: 320px; height: auto; border-radius: 12px; transform-origin: center;
             animation: idle-bob 3500ms ease-in-out infinite;
             filter: drop-shadow(0 20px 80px rgba(0, 0, 0, 0.6));
             transition: box-shadow var(--transition), transform var(--transition);
         }
-
-        /* subtle aura glow around portrait */
         .portrait-aura {
-            position: absolute;
-            inset: -16px;
-            border-radius: 16px;
-            pointer-events: none;
+            position: absolute; inset: -16px; border-radius: 16px; pointer-events: none;
             background: radial-gradient(closest-side, rgba(255, 215, 120, 0.09), rgba(127, 214, 210, 0.03) 40%, transparent 55%);
-            filter: blur(10px);
-            opacity: 0.95;
-            transition: opacity var(--transition);
+            filter: blur(10px); opacity: 0.95; transition: opacity var(--transition);
         }
-
         @keyframes idle-bob {
-
-            0%,
-            100% {
-                transform: translateY(0px) scale(1);
-            }
-
-            50% {
-                transform: translateY(-8px) scale(1.01);
-            }
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-8px) scale(1.01); }
         }
-
-        /* particles (light orbs) */
-        .particles {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            overflow: visible;
-        }
-
+        .particles { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
         .orb {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 999px;
+            position: absolute; width: 10px; height: 10px; border-radius: 999px;
             background: radial-gradient(circle, rgba(255, 234, 170, 0.98) 0%, rgba(255, 200, 120, 0.6) 55%, rgba(127, 214, 210, 0.08) 100%);
-            filter: blur(0.6px);
-            opacity: 0;
-            animation: orb-rise linear infinite;
+            filter: blur(0.6px); opacity: 0; animation: orb-rise linear infinite;
         }
-
         @keyframes orb-rise {
-            0% {
-                opacity: 0;
-                transform: translateY(0) scale(0.6);
-            }
-
-            10% {
-                opacity: 0.9;
-            }
-
-            50% {
-                opacity: 0.6;
-                transform: translateY(-80px) scale(1.1);
-            }
-
-            90% {
-                opacity: 0.1;
-            }
-
-            100% {
-                opacity: 0;
-                transform: translateY(-160px) scale(0.4);
-            }
+            0% { opacity: 0; transform: translateY(0) scale(0.6);}
+            10% { opacity: 0.9; }
+            50% { opacity: 0.6; transform: translateY(-80px) scale(1.1);}
+            90% { opacity: 0.1;}
+            100% { opacity: 0; transform: translateY(-160px) scale(0.4);}
         }
-
-        /* === Inventory / tabs === */
-        .inventory {
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-sizing: border-box;
-            height: 100%;
-        }
-
-        .section h2 {
-            font-size: 18px;
-            margin: 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 240, 200, 0.03);
-            color: var(--gold-2);
-        }
-
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin-top: 6px;
-        }
-
+        .inventory { padding: 18px; display: flex; flex-direction: column; gap: 12px; box-sizing: border-box; height: 100%;}
+        .section h2 { font-size: 18px; margin: 0; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 240, 200, 0.03); color: var(--gold-2);}
+        .tabs { display: flex; gap: 8px; margin-top: 6px;}
         .tab-btn {
-            padding: 8px 12px;
-            border-radius: 10px;
+            padding: 8px 12px; border-radius: 10px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.03);
             color: #f9f6eb;
-            cursor: pointer;
-            font-size: 13px;
+            cursor: pointer; font-size: 13px;
             transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
         }
-
         .tab-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5);
+            transform: translateY(-3px); box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5);
             background: linear-gradient(180deg, rgba(255, 240, 200, 0.02), rgba(127, 214, 210, 0.01));
         }
-
         .tab-btn.active {
             background: linear-gradient(180deg, rgba(255, 230, 150, 0.08), rgba(255, 230, 150, 0.02));
             border-color: rgba(255, 230, 160, 0.12);
         }
-
         .inventory-grid {
             display: none;
             margin-top: 10px;
             grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
             gap: 12px;
         }
-
-        .inventory-grid.active {
-            display: grid;
-        }
-
-        .slot,
-        .item {
-            width: 72px;
-            height: 72px;
-            border-radius: 10px;
+        .inventory-grid.active { display: grid; }
+        .slot, .item {
+            width: 72px; height: 72px; border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.06);
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.06));
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             transition: transform var(--transition), box-shadow var(--transition);
             cursor: grab;
         }
-
-        .slot {
-            border: 1px solid rgba(255, 255, 255, 0.06);
+        .slot { border: 1px solid rgba(255, 255, 255, 0.06); }
+        .slot:hover, .item:hover { transform: translateY(-6px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);}
+        .slot img, .item img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 8px; pointer-events: none;
         }
-
-        .slot:hover,
-        .item:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
-        }
-
-        .slot img,
-        .item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-            pointer-events: none;
-        }
-
-        /* === Equipment layout === */
-        .equipment {
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-sizing: border-box;
-            height: 100%;
-        }
-
-        .equip-layout {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 40px;
-            position: relative;
-        }
-
-        .equip-left,
-        .equip-right {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .equip-center {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #mini-avatar-img {
-            width: auto;
-            height: 210px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 240, 200, 0.04);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-
+        .equipment { padding: 18px; display: flex; flex-direction: column; gap: 12px; box-sizing: border-box; height: 100%;}
+        .equip-layout { display: flex; align-items: center; justify-content: center; gap: 40px; position: relative;}
+        .equip-left, .equip-right { display: flex; flex-direction: column; gap: 18px;}
+        .equip-center { position: relative; display: flex; align-items: center; justify-content: center;}
+        #mini-avatar-img { width: auto; height: 210px;}
         .equip-overlay {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: auto;
-            height: 210px;
-            display: none;
-            pointer-events: auto;
-            cursor: pointer;
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: auto; height: 210px; display: none; pointer-events: auto; cursor: pointer;
         }
-
-        /* dragging */
-        .dragging {
-            opacity: 0.45;
-            transform: scale(0.94) rotate(-2deg);
-            cursor: grabbing;
-        }
-
-        /* buttons (where actions appear in earlier sample) */
+        .dragging { opacity: 0.45; transform: scale(0.94) rotate(-2deg); cursor: grabbing;}
         .button {
             display: block;
             background: linear-gradient(180deg, rgba(255, 223, 150, 0.78), rgba(180, 120, 60, 0.22));
@@ -605,13 +307,10 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
             transition: transform var(--transition), box-shadow var(--transition);
         }
-
         .button:hover {
             transform: translateY(-4px) scale(1.02);
             box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
         }
-
-        /* small responsive fallback */
         @media (max-width:1100px) {
             .ui-wrap {
                 grid-template-columns: 1fr;
@@ -623,92 +322,238 @@
                 width: calc(100vw - 40px);
                 max-width: 1100px;
             }
-
-            .center {
-                grid-column: 1/2;
-                grid-row: 2/3;
-            }
-
-            .profile,
-            .stats-panel,
-            .inventory-panel,
-            .equipment-panel {
-                grid-column: 1/2;
-            }
-
-            .character-showcase {
-                width: 100%;
-                height: 520px;
-            }
+            .center { grid-column: 1/2; grid-row: 2/3; }
+            .profile, .stats-panel, .inventory-panel, .equipment-panel { grid-column: 1/2; }
+            .character-showcase { width: 100%; height: 520px;}
         }
-
-        /* === Top Bar === */
         #topBar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+            position: fixed; top: 0; left: 0; width: 100%;
             background: rgba(38, 24, 12, 0.85);
-            display: flex;
-            gap: 32px;
-            align-items: center;
-            padding: 6px 24px;
-            border-bottom: 2px solid rgba(220, 173, 78, 0.362);
-            box-sizing: border-box;
-            z-index: 9998;
-            font-family: 'Cinzel', serif;
-            color: var(--gold-2);
+            display: flex; gap: 32px; align-items: center;
+            padding: 6px 24px; border-bottom: 2px solid rgba(220, 173, 78, 0.362);
+            box-sizing: border-box; z-index: 9998;
+            font-family: 'Cinzel', serif; color: var(--gold-2);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
             overflow: hidden;
             transition: padding 0.3s ease;
         }
-
-        #topBar:hover {
-            padding: 12px 24px;
+        #topBar:hover { padding: 12px 24px; }
+        #topBar .stat { display: flex; align-items: center; gap: 8px; font-size: 14px;}
+        #topBar .stat .bar-container {
+            width: 160px; height: 12px;
+            background: rgba(255, 255, 255, 0.08); border-radius: 6px;
+            overflow: hidden; border: 1px solid rgba(255, 230, 180, 0.12); margin-left: 6px;
+        }
+        #topBar .bar { height: 100%; border-radius: 6px;}
+        #topBar .hp-bar { background: linear-gradient(90deg, #f75c5c, #ff9a6f); width: 100%; transition: width 0.3s ease;}
+        #topBar .mp-bar { background: linear-gradient(90deg, #5c9cf7, #6fd0ff); width: 100%; transition: width 0.3s ease;}
+        #topBar .stat.gold { font-size: 16px; font-weight: 600; margin-left: auto;}
+        /* === Tooltip === */
+        .item-tooltip {
+            position: fixed;
+            z-index: 99999;
+            pointer-events: none;
+            background: rgba(38,24,12,0.97);
+            border: 1px solid rgba(255,230,160,0.28);
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.8), 0 0 12px rgba(255,220,145,0.09);
+            padding: 14px 18px 12px 18px;
+            min-width: 210px;
+            max-width: 320px;
+            font-size: 15px;
+            color: #ffeec7;
+            font-family: 'Cinzel', serif;
+            transition: opacity 0.18s cubic-bezier(.37,.71,.45,1.28);
+            opacity: 0;
+            pointer-events: none;
+            line-height: 1.5;
+        }
+        .item-tooltip.visible { opacity: 1; }
+        .item-tooltip .tt-name {
+            font-size: 17px;
+            font-weight: bold;
+            color: var(--gold-2);
+            margin-bottom: 4px;
+        }
+        .item-tooltip .tt-desc {
+            font-size: 14px;
+            color: #d8e8e6;
+            margin-bottom: 7px;
+        }
+        .item-tooltip .tt-stats {
+            font-size: 13px;
+            color: #aee6e1;
+        }
+        .item-tooltip .tt-stats span {
+            margin-right: 9px;
+        }
+           .bottom-bar {
+            position: fixed;
+            left: 0; right: 0; bottom: 0;
+            z-index: 10001;
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            justify-content: center;
+            height: 68px;
+            background: rgba(38, 24, 12, 0.92);
+            border-top: 2px solid rgba(255, 230, 180, 0.14);
+            box-shadow: 0 -2px 18px rgba(0,0,0,0.35);
+        }
+        .bottom-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--gold-2);
+            background: linear-gradient(180deg, rgba(255, 230, 150, 0.18), rgba(127, 214, 210, 0.03));
+            border: 1px solid rgba(255, 230, 160, 0.22);
+            border-radius: 12px;
+            padding: 10px 38px;
+            margin: 0 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+            transition: transform .18s, box-shadow .18s, background .18s;
+        }
+        .bottom-btn:hover {
+            background: linear-gradient(180deg, var(--gold-2), var(--gold) 98%);
+            color: #3b2618;
+            transform: translateY(-4px) scale(1.06);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.27);
         }
 
-        #topBar .stat {
+        /* === Overlay screens === */
+        .overlay-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 20000;
+            background: rgba(18,12,6,0.58);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: opacity .15s;
+            backdrop-filter: blur(3px);
+        }
+        .overlay-screen.active { display: flex; }
+
+        .popup-card {
+            min-width: 320px;
+            max-width: 98vw;
+            background: linear-gradient(180deg, #22160c 88%, #3f2b12 100%);
+            border-radius: 18px;
+            border: 1.5px solid var(--glass-border);
+            box-shadow: 0 6px 40px rgba(0,0,0,.44), 0 0 28px var(--gold-2), 0 0 0 transparent;
+            padding: 32px 32px 30px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            font-family: 'Cinzel', serif;
+            color: var(--gold-2);
+            position: relative;
+            animation: popup-fadein 0.18s;
+        }
+        @keyframes popup-fadein { from { opacity:0; transform: scale(.88);} to { opacity:1; transform: scale(1);} }
+        .popup-card img { width: 68px; height: 68px; border-radius: 11px; margin-bottom: 8px; box-shadow: 0 2px 12px rgba(0,0,0,.16);}
+        .popup-card .popup-title { font-size: 22px; font-weight: 700; margin-bottom: 3px;}
+        .popup-card .popup-content { margin-bottom: 16px; text-align: center;}
+        .popup-buttons { display: flex; gap: 22px; margin-top: 5px;}
+        .popup-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 9px;
+            padding: 9px 22px;
+            border: 1px solid var(--glass-border);
+            background: linear-gradient(180deg, #ffe7b2 0%, #e8c27c 100%);
+            color: #3b2618;
+            cursor: pointer;
+            transition: background .16s, color .16s, box-shadow .18s;
+        }
+        .popup-btn.no {
+            background: #22201b;
+            color: #f9eed6;
+            border-color: #9a8c6f;
+        }
+        .popup-btn:hover {
+            background: var(--gold-2);
+            color: #26200c;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+        }
+
+        /* Shop popup */
+        .shop-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 8px;
+        }
+        .shop-item-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
+            gap: 18px;
+            justify-content: center;
+        }
+        .shop-item-row img { width: 62px; height: 62px; border-radius: 12px;}
+        .shop-item-info { flex: 1; }
+        .shop-item-title { font-size: 18px; font-weight: 700;}
+        .shop-item-desc { font-size: 14px; color: #f4e1bb; margin-bottom: 4px;}
+        .shop-item-price { font-size: 16px; color: var(--gold);}
+        .shop-buy-btn {
+            font-size: 15px;
+            background: linear-gradient(180deg, #ffe7b2 0%, #e8c27c 100%);
+            border: 1px solid #ddb46c;
+            border-radius: 8px;
+            padding: 7px 22px;
+            color: #3b2618;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .16s, color .16s;
+        }
+        .shop-buy-btn:disabled {
+            opacity: .56; cursor: not-allowed;
         }
 
-        #topBar .stat .bar-container {
-            width: 160px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 230, 180, 0.12);
-            margin-left: 6px;
+        /* Menu popup */
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 180px;
+            margin-top: 12px;
         }
-
-        #topBar .bar {
-            height: 100%;
-            border-radius: 6px;
-        }
-
-        #topBar .hp-bar {
-            background: linear-gradient(90deg, #f75c5c, #ff9a6f);
-            width: 100%;
-            transition: width 0.3s ease;
-        }
-
-        #topBar .mp-bar {
-            background: linear-gradient(90deg, #5c9cf7, #6fd0ff);
-            width: 100%;
-            transition: width 0.3s ease;
-        }
-
-        #topBar .stat.gold {
+        .menu-btn {
+            background: linear-gradient(180deg,#fff7e3 0%, #f7e3b0 100%);
+            color: #2a1d0c;
+            border-radius: 8px;
+            border: 1px solid #d2ba8b;
             font-size: 16px;
-            font-weight: 600;
-            margin-left: auto;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            padding: 12px 0;
+            cursor: pointer;
+            transition: background .14s, color .14s;
+        }
+        .menu-btn:hover {
+            background: var(--gold-2);
+            color: #6e4d15;
+        }
+        .popup-card .close-x {
+            position: absolute;
+            top: 10px; right: 14px;
+            font-size: 18px;
+            color: #e1c896;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background .14s;
+        }
+        .popup-card .close-x:hover {
+            background: #c8a97b;
+            color: #3b2618;
         }
     </style>
 </head>
-
 <body>
     <!-- Title fade-in screen -->
     <div id="titleScreen" class="title-screen">
@@ -743,7 +588,6 @@
 
     <!-- Main UI -->
     <div class="ui-wrap" id="uiWrap">
-
         <!-- Profile -->
         <div class="section profile">
             <div class="avatar-box">
@@ -756,53 +600,35 @@
                         <div><strong>Race:</strong> Human</div>
                         <div><strong>Class:</strong> Wizard</div>
                         <div><strong>Level:</strong> 1</div>
-
-
                     </div>
                 </div>
             </div>
         </div>
-
         <!-- Center -->
         <div class="section center">
-            <div class="character-showcase" title="Character Showcase">
+            <div class="character-showcase">
                 <div class="particles" aria-hidden="true">
-                    <!-- several orbs with different positions/delays -->
-                    <div class="orb"
-                        style="left:48%; bottom:20%; width:10px; height:10px; animation-duration:6s; animation-delay:0s;">
-                    </div>
-                    <div class="orb"
-                        style="left:30%; bottom:10%; width:12px; height:12px; animation-duration:7.5s; animation-delay:1s;">
-                    </div>
-                    <div class="orb"
-                        style="left:70%; bottom:14%; width:8px; height:8px; animation-duration:5.5s; animation-delay:0.6s;">
-                    </div>
-                    <div class="orb"
-                        style="left:60%; bottom:6%; width:16px; height:16px; animation-duration:8s; animation-delay:2.2s;">
-                    </div>
+                    <div class="orb" style="left:48%; bottom:20%; width:10px; height:10px; animation-duration:6s; animation-delay:0s;"></div>
+                    <div class="orb" style="left:30%; bottom:10%; width:12px; height:12px; animation-duration:7.5s; animation-delay:1s;"></div>
+                    <div class="orb" style="left:70%; bottom:14%; width:8px; height:8px; animation-duration:5.5s; animation-delay:0.6s;"></div>
+                    <div class="orb" style="left:60%; bottom:6%; width:16px; height:16px; animation-duration:8s; animation-delay:2.2s;"></div>
                 </div>
-
                 <div class="portrait-wrap">
                     <div class="portrait-aura"></div>
                     <img id="centerPortrait" class="portrait" src="assets/av" alt="Kotobuki portrait">
                 </div>
             </div>
         </div>
-
         <!-- Inventory -->
         <div class="section inventory-panel">
             <div class="inventory">
                 <h2>Inventory</h2>
-
-                <!-- Tabs -->
                 <div class="tabs">
                     <div class="tab-btn active" data-tab="items">Items</div>
                     <div class="tab-btn" data-tab="armor">Armor</div>
                     <div class="tab-btn" data-tab="weapons">Weapons</div>
                     <div class="tab-btn" data-tab="consumables">Consumables</div>
                 </div>
-
-                <!-- Grids -->
                 <div class="inventory-grid active" id="items">
                     <div class="item" draggable="true" data-item="off-magic-book" data-slot="none">
                         <img src="items/book1.png" alt="Offensive Magic Book">
@@ -817,31 +643,25 @@
                         <img src="items/book4.png" alt="Advanced Ice Magic Book">
                     </div>
                 </div>
-
                 <div class="inventory-grid" id="armor">
-                    <div class="item" draggable="true" data-item="hat" data-slot="head"
-                        data-overlay="assets/eqpav/hat.png">
+                    <div class="item" draggable="true" data-item="hat" data-slot="head" data-overlay="assets/eqpav/hat.png">
                         <img src="items/hat.png" alt="Wizard Hat">
                     </div>
-                    <div class="item" draggable="true" data-item="robe" data-slot="body"
-                        data-overlay="assets/eqpav/robe.png">
+                    <div class="item" draggable="true" data-item="robe" data-slot="body" data-overlay="assets/eqpav/robe.png">
                         <img src="items/robe.png" alt="Wizard Robe">
                     </div>
                     <div class="item" draggable="true" data-item="life-amulet" data-slot="accessory">
                         <img src="items/amulet.png" alt="Life Amulet">
                     </div>
                 </div>
-
                 <div class="inventory-grid" id="weapons">
-                    <div class="item" draggable="true" data-item="staff" data-slot="weapon"
-                        data-overlay="assets/eqpav/stf.png">
+                    <div class="item" draggable="true" data-item="staff" data-slot="weapon" data-overlay="assets/eqpav/stf.png">
                         <img src="items/staff.png" alt="Old Ice Staff">
                     </div>
                 </div>
-
                 <div class="inventory-grid" id="consumables">
                     <div class="item" draggable="true" data-item="healing-potion" data-slot="none">
-                        <img src="items/heal_potion.png" alt="Healing Potion x5">
+                        <img src="assets/items/healpt.png" alt="Healing Potion x5">
                     </div>
                     <div class="item" draggable="true" data-item="mana-potion" data-slot="none">
                         <img src="items/mana_potion.png" alt="Mana Potion x10">
@@ -853,10 +673,8 @@
                         <img src="items/pie.png" alt="Baked Rury Pie x3">
                     </div>
                 </div>
-
             </div>
         </div>
-
         <!-- Stats -->
         <div class="section stats-panel">
             <div class="stats">
@@ -871,7 +689,6 @@
                 </ul>
             </div>
         </div>
-
         <!-- Equipment -->
         <div class="section equipment-panel">
             <div class="equipment">
@@ -881,44 +698,37 @@
                         <div class="slot" data-slot="head"></div>
                         <div class="slot" data-slot="body"></div>
                     </div>
-
                     <div class="equip-center">
                         <img id="mini-avatar-img" src="assets/eqpav/av.png" alt="Mini Avatar">
                         <img id="overlay-head" class="equip-overlay" data-slot="head">
                         <img id="overlay-body" class="equip-overlay" data-slot="body">
                         <img id="overlay-weapon" class="equip-overlay" data-slot="weapon">
                     </div>
-
                     <div class="equip-right">
                         <div class="slot" data-slot="weapon"></div>
                         <div class="slot" data-slot="accessory"></div>
                     </div>
                 </div>
-
-
             </div>
         </div>
-
     </div>
-
-    <!-- === Scripts === -->
-
+    <!-- Tooltip -->
+    <div id="itemTooltip" class="item-tooltip"></div>
+    <!-- Scripts -->
     <script>
-        /* === Audio setup === */
+        // === Audio setup ===
         const hoverSound = new Audio('sfx/hover.mp3');
         const clickSound = new Audio('sfx/click.wav');
         const equipSound = new Audio('sfx/equip.mp3');
         const dragSound = new Audio('sfx/drag.mp3');
         hoverSound.preload = clickSound.preload = equipSound.preload = 'auto';
-
         function tryPlay(audio) {
             audio.currentTime = 0;
             audio.play().catch(() => { });
         }
-
-        /* === Tabs (onclick) === */
+        // === Tabs ===
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => { // onclick
+            btn.addEventListener('click', () => {
                 tryPlay(clickSound);
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.inventory-grid').forEach(g => g.classList.remove('active'));
@@ -926,15 +736,13 @@
                 document.getElementById(btn.dataset.tab).classList.add('active');
             });
         });
-
-        /* === Core variables === */
+        // === Core variables ===
         const uiWrap = document.getElementById('uiWrap');
         const slots = document.querySelectorAll('.slot');
         const items = document.querySelectorAll('.item');
         const inventoryGrids = document.querySelectorAll('.inventory-grid');
         let draggedItem = null;
-
-        /* === Category mapping === */
+        // === Category mapping ===
         const categoryMap = {
             weapon: 'weapons',
             head: 'armor',
@@ -942,51 +750,43 @@
             accessory: 'armor',
             none: 'items'
         };
-
-        /* === Drag system (ondragstart & ondragend) === */
-        uiWrap.addEventListener('dragstart', e => { // ondragstart
+        // === Drag system ===
+        uiWrap.addEventListener('dragstart', e => {
             const item = e.target.closest('.item');
             if (!item) return;
             draggedItem = item;
             item.classList.add('dragging');
             tryPlay(dragSound);
         });
-
-        uiWrap.addEventListener('dragend', e => { // ondragend
+        uiWrap.addEventListener('dragend', e => {
             const item = e.target.closest('.item');
             if (!item) return;
             item.classList.remove('dragging');
             draggedItem = null;
         });
-
-        /* === Drop to Equipment Slots (ondrop, ondragover, mouse/focus events) === */
+        // === Drop to Equipment Slots ===
         slots.forEach(slot => {
-            slot.addEventListener('mouseenter', () => tryPlay(hoverSound)); // onmouseenter
-            slot.addEventListener('dragover', e => e.preventDefault()); // ondragover
-            slot.addEventListener('drop', e => { // ondrop
+            slot.addEventListener('mouseenter', () => tryPlay(hoverSound));
+            slot.addEventListener('dragover', e => e.preventDefault());
+            slot.addEventListener('drop', e => {
                 e.preventDefault();
                 if (!draggedItem) return;
                 const requiredSlot = draggedItem.dataset.slot;
                 const targetSlot = slot.dataset.slot;
-
-                // ❌ Block wrong slot types
                 if (requiredSlot !== targetSlot) {
                     tryPlay(clickSound);
                     return;
                 }
-
                 // Move existing equipped item back to inventory
                 if (slot.firstChild) {
                     const oldItem = slot.firstChild;
                     const cat = categoryMap[oldItem.dataset.slot] || 'items';
                     document.getElementById(cat).appendChild(oldItem);
                 }
-
                 // Equip new item
                 slot.innerHTML = '';
                 slot.appendChild(draggedItem);
                 tryPlay(equipSound);
-
                 // Show overlay if applicable
                 const overlayPath = draggedItem.dataset.overlay;
                 const overlayImg = document.querySelector(`.equip-overlay[data-slot="${targetSlot}"]`);
@@ -998,66 +798,58 @@
                         overlayImg.style.display = 'none';
                     }
                 }
+                refreshStatsPanel();
             });
-
-            /* === Extra Event Types on Slots === */
-            slot.addEventListener('mousedown', () => slot.style.transform = 'scale(0.97)'); // onmousedown
-            slot.addEventListener('mouseup', () => slot.style.transform = ''); // onmouseup
-            slot.addEventListener('mouseout', () => slot.style.transform = ''); // onmouseout
-            slot.addEventListener('focus', () => slot.style.outline = '2px solid var(--accent)'); // onfocus
-            slot.addEventListener('blur', () => slot.style.outline = ''); // onblur
-            slot.addEventListener('change', () => console.log(`Slot changed: ${slot.dataset.slot}`)); // onchange
+            slot.addEventListener('mousedown', () => slot.style.transform = 'scale(0.97)');
+            slot.addEventListener('mouseup', () => slot.style.transform = '');
+            slot.addEventListener('mouseout', () => slot.style.transform = '');
+            slot.addEventListener('focus', () => slot.style.outline = '2px solid var(--accent)');
+            slot.addEventListener('blur', () => slot.style.outline = '');
+            slot.addEventListener('change', () => console.log(`Slot changed: ${slot.dataset.slot}`));
         });
-
-        /* === Drop to Inventory (Unequip) === */
+        // === Drop to Inventory (Unequip) ===
         inventoryGrids.forEach(grid => {
             grid.style.minHeight = '120px';
             grid.style.position = 'relative';
             grid.style.border = '1px solid transparent';
-            grid.addEventListener('dragover', e => e.preventDefault()); // ondragover
-            grid.addEventListener('drop', e => { // ondrop
+            grid.addEventListener('dragover', e => e.preventDefault());
+            grid.addEventListener('drop', e => {
                 e.preventDefault();
                 if (!draggedItem) return;
                 const fromSlot = draggedItem.closest('.slot');
                 if (!fromSlot) return;
                 const itemType = draggedItem.dataset.slot;
                 const correctGrid = document.getElementById(categoryMap[itemType] || 'items');
-
                 if (grid.id !== correctGrid.id) {
                     tryPlay(clickSound);
                     return;
                 }
-
                 fromSlot.innerHTML = '';
                 correctGrid.appendChild(draggedItem);
                 tryPlay(equipSound);
-
                 const overlayImg = document.querySelector(`.equip-overlay[data-slot="${fromSlot.dataset.slot}"]`);
                 if (overlayImg) overlayImg.style.display = 'none';
+                refreshStatsPanel();
             });
-
-            // Extra event types on inventory grids
-            grid.addEventListener('mousedown', () => grid.style.opacity = '0.85'); // onmousedown
-            grid.addEventListener('mouseup', () => grid.style.opacity = ''); // onmouseup
-            grid.addEventListener('mouseout', () => grid.style.opacity = ''); // onmouseout
-            grid.addEventListener('focus', () => grid.style.outline = '2px solid var(--accent)'); // onfocus
-            grid.addEventListener('blur', () => grid.style.outline = ''); // onblur
-            grid.addEventListener('change', () => console.log(`Inventory grid changed: ${grid.id}`)); // onchange
+            grid.addEventListener('mousedown', () => grid.style.opacity = '0.85');
+            grid.addEventListener('mouseup', () => grid.style.opacity = '');
+            grid.addEventListener('mouseout', () => grid.style.opacity = '');
+            grid.addEventListener('focus', () => grid.style.outline = '2px solid var(--accent)');
+            grid.addEventListener('blur', () => grid.style.outline = '');
+            grid.addEventListener('change', () => console.log(`Inventory grid changed: ${grid.id}`));
         });
-
-        /* === Items hover sounds & events === */
+        // === Item hover sounds & events ===
         items.forEach(item => {
-            item.addEventListener('mouseenter', () => tryPlay(hoverSound)); // onmouseenter
-            item.addEventListener('mousedown', () => item.style.transform = 'scale(0.97)'); // onmousedown
-            item.addEventListener('mouseup', () => item.style.transform = ''); // onmouseup
-            item.addEventListener('mouseout', () => item.style.transform = ''); // onmouseout
-            item.addEventListener('focus', () => item.style.outline = '2px solid var(--accent)'); // onfocus
-            item.addEventListener('blur', () => item.style.outline = ''); // onblur
-            item.addEventListener('change', () => console.log(`Item changed: ${item.dataset.item}`)); // onchange
-            item.setAttribute('tabindex', '0'); // Enable focus/blur
+            item.addEventListener('mouseenter', () => tryPlay(hoverSound));
+            item.addEventListener('mousedown', () => item.style.transform = 'scale(0.97)');
+            item.addEventListener('mouseup', () => item.style.transform = '');
+            item.addEventListener('mouseout', () => item.style.transform = '');
+            item.addEventListener('focus', () => item.style.outline = '2px solid var(--accent)');
+            item.addEventListener('blur', () => item.style.outline = '');
+            item.addEventListener('change', () => console.log(`Item changed: ${item.dataset.item}`));
+            item.setAttribute('tabindex', '0');
         });
-
-        /* === Slot Labels === */
+        // === Slot Labels ===
         document.querySelectorAll('.slot').forEach(slot => {
             const label = document.createElement('div');
             label.textContent = slot.dataset.slot.charAt(0).toUpperCase() + slot.dataset.slot.slice(1);
@@ -1068,15 +860,13 @@
             label.style.pointerEvents = 'none';
             slot.insertAdjacentElement('afterend', label);
         });
-
-        /* === Title Screen Fade (onload) === */
-        window.addEventListener('load', () => { // onload
+        // === Title Screen Fade ===
+        window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('titleScreen').classList.add('hidden');
             }, 2000);
         });
-
-        /* === Auto visual refresh for equip slot borders === */
+        // === Auto visual refresh for equip slot borders ===
         function refreshEquipSlots() {
             slots.forEach(slot => {
                 if (!slot.querySelector('.item')) {
@@ -1086,14 +876,171 @@
                 }
             });
         }
-
         const observer = new MutationObserver(refreshEquipSlots);
         observer.observe(document.querySelector('.equipment'), { childList: true, subtree: true });
         refreshEquipSlots();
+
+        const itemData = {
+            "off-magic-book": {
+                name: "Offensive Magic Book",
+                desc: "A tome of basic offensive spells.<br>Teaches <b>Magic Missile</b> and <b>Arcane Bolt</b>.",
+                stats: {}
+            },
+            "def-magic-book": {
+                name: "Defensive Magic Book",
+                desc: "A guide to magical barriers.<br>Teaches <b>Shield</b> and <b>Sanctuary</b>.",
+                stats: {}
+            },
+            "fire-magic-book": {
+                name: "Fire Magic Basics Book",
+                desc: "Crimson-bound volume of fire spells.<br>Teaches <b>Firebolt</b> and <b>Ignite</b>.",
+                stats: {}
+            },
+            "adv-ice-book": {
+                name: "Advanced Ice Magic Book",
+                desc: "A rare book with advanced frost incantations.<br>Teaches <b>Frost Lance</b> and <b>Glacial Wall</b>.",
+                stats:{}
+            },
+            "hat": {
+                name: "Wizard Hat",
+                desc: "Pointy hat for wizards.<br>Enhances magic focus.",
+                stats: { INT: 1, "MP": 3 }
+            },
+            "robe": {
+                name: "Wizard Robe",
+                desc: "A robe woven with magical thread.<br>Offers mild protection.",
+                stats: { CON: 1, WIS: 1, "MP": 4 }
+            },
+            "life-amulet": {
+                name: "Life Amulet",
+                desc: "A charm that pulses with life energy.<br>Worn as an accessory.",
+                stats: { HP: 15, WIS: 1 }
+            },
+            "staff": {
+                name: "Old Ice Staff",
+                desc: "A staff that chills to the touch.<br>Amplifies ice magic.",
+                stats: { INT: 2, "Ice DMG": 2 }
+            },
+            "healing-potion": {
+                name: "Healing Potion",
+                desc: "Restores <b>30 HP</b> instantly.<br>(x5)",
+                stats: {}
+            },
+            "mana-potion": {
+                name: "Mana Potion",
+                desc: "Restores <b>20 MP</b> instantly.<br>(x10)",
+                stats: {}
+            },
+            "rury-leaf": {
+                name: "Rury Leaf",
+                desc: "A common herb, used in potion-making.<br>(x50)",
+                stats: {}
+            },
+            "baked-rury-pie": {
+                name: "Baked Rury Pie",
+                desc: "A hearty pie that recovers <b>10 HP</b> and <b>5 MP</b>.<br>(x3)",
+                stats: {}
+            }
+        };
+
+        // === Add item attributes to .item elements ===
+        document.querySelectorAll('.item').forEach(item => {
+            const key = item.dataset.item;
+            if (itemData[key]) {
+                item.setAttribute('data-name', itemData[key].name);
+                item.setAttribute('data-desc', itemData[key].desc);
+                item.setAttribute('data-stats', JSON.stringify(itemData[key].stats));
+            }
+        });
+
+        // === Tooltip Logic ===
+        const tooltip = document.getElementById('itemTooltip');
+        function buildStatString(stats) {
+            if (!stats || Object.keys(stats).length === 0) return '';
+            let out = '';
+            for (const [k, v] of Object.entries(stats)) {
+                out += `<span><b>${k}</b>: ${v > 0 ? "+" : ""}${v}</span>`;
+            }
+            return out;
+        }
+        document.querySelectorAll('.item').forEach(item => {
+            item.addEventListener('mousemove', e => {
+                const name = item.getAttribute('data-name') || '';
+                const desc = item.getAttribute('data-desc') || '';
+                const stats = JSON.parse(item.getAttribute('data-stats') || '{}');
+                tooltip.innerHTML = `<div class="tt-name">${name}</div>
+                    <div class="tt-desc">${desc}</div>
+                    <div class="tt-stats">${buildStatString(stats)}</div>`;
+                tooltip.classList.add('visible');
+                const pad = 20;
+                let x = e.clientX + pad, y = e.clientY + pad;
+                const tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+                if (x + tw > window.innerWidth) x = window.innerWidth - tw - 8;
+                if (y + th > window.innerHeight) y = window.innerHeight - th - 8;
+                tooltip.style.left = `${x}px`;
+                tooltip.style.top = `${y}px`;
+            });
+            item.addEventListener('mouseenter', e => {
+                tooltip.classList.add('visible');
+            });
+            item.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('visible');
+            });
+            item.addEventListener('blur', () => {
+                tooltip.classList.remove('visible');
+            });
+        });
+
+        // === Character base stats ===
+        const baseStats = {
+            STR: 10, DEX: 12, CON: 8, INT: 15, WIS: 14, CHA: 13,
+            HP: 100, MP: 50,
+            "Fire DMG": 0, "Ice DMG": 0
+        };
+        function getEquippedStats() {
+            let stats = { ...baseStats };
+            document.querySelectorAll('.slot').forEach(slot => {
+                const item = slot.querySelector('.item');
+                if (item) {
+                    try {
+                        const itemStats = JSON.parse(item.getAttribute('data-stats') || '{}');
+                        for (const [k, v] of Object.entries(itemStats)) {
+                            if (stats[k] === undefined) stats[k] = v;
+                            else stats[k] += v;
+                        }
+                    } catch {}
+                }
+            });
+            return stats;
+        }
+        function refreshStatsPanel() {
+            const s = getEquippedStats();
+            document.querySelectorAll('.stats-panel .stats li').forEach(li => {
+                const statName = li.children[0].textContent;
+                li.children[1].textContent = s[statName] !== undefined ? s[statName] : '';
+            });
+            document.getElementById('hpMax').textContent = s.HP;
+            document.getElementById('mpMax').textContent = s.MP;
+            let hp = parseInt(document.getElementById('hpCurrent').textContent);
+            let mp = parseInt(document.getElementById('mpCurrent').textContent);
+            if (hp > s.HP) hp = s.HP;
+            if (mp > s.MP) mp = s.MP;
+            document.getElementById('hpCurrent').textContent = hp;
+            document.getElementById('mpCurrent').textContent = mp;
+            document.getElementById('hpBar').style.width = `${(hp / s.HP) * 100}%`;
+            document.getElementById('mpBar').style.width = `${(mp / s.MP) * 100}%`;
+        }
+        // Observe changes to equipment for stat refresh
+        const equipment = document.querySelector('.equipment');
+        const equipObserver = new MutationObserver(() => {
+            refreshEquipSlots();
+            refreshStatsPanel();
+        });
+        equipObserver.observe(equipment, { childList: true, subtree: true });
+        // Make sure stats panel is correct at start
+        window.addEventListener('DOMContentLoaded', () => {
+            refreshStatsPanel();
+        });
     </script>
-
-
-
 </body>
-
 </html>
