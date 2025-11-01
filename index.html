@@ -2,32 +2,32 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-    <title>Character Sheet  ⌜Kotobuki⌟</title>
+<title>Responsive 16:9 Container</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
 <style>
-  html,body {
+  html, body {
+    margin: 0;
+    padding: 0;
     height: 100%;
     width: 100%;
-    margin: 0;
     background: #000;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  /* container positioned at center of viewport */
   #container {
+    width: 1280px;
+    height: 720px;
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 1280px;
-    height: 720px;
-    /* IMPORTANT: center as origin so translate+scale keep it centered */
     transform-origin: center center;
-    /* no transform here: JS will set both translate and scale in one line */
     box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Example content: you will replace this with your actual markup */
   .tv {
     width: 100%;
     height: 100%;
@@ -36,14 +36,12 @@
     border: 6px solid #0f0f0f;
     box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.5);
     overflow: hidden;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color: #d1d1d1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  /* tiny visual so you can see exact centeredness */
-#app {
+  #app {
     width: 100%;
     height: 100%;
     border: none;
@@ -51,35 +49,38 @@
     box-shadow: 0 0 20px rgba(0,0,0,0.6);
     background: #fff;
   }
-  /* optional: show viewport guides for debug (comment out later) */
-  /* .debug-viewport { position: fixed; top:0; left:0; color: lime; } */
 </style>
 </head>
 <body>
 
 <div id="container">
   <div class="tv">
-      <iframe id="app" src="try.html">
-      </iframe>
+    <iframe id="app" src="try.html"></iframe>
   </div>
 </div>
 
 <script>
-  function scaleAndCenter() {
-    const container = document.getElementById('container');
+function scaleAndCenter() {
+  const container = document.getElementById('container');
+  const targetWidth = 1280;
+  const targetHeight = 720;
 
-    // compute scale to fit while preserving aspect ratio (16:9)
-    const scale = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+  // Get viewport size (including mobile bars)
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
 
-    // set transform — both translate (center) and scale in one line
-    // IMPORTANT: translate uses percentages of the element itself, so we must keep translate and scale together
-    container.style.transform = `translate(-50%, -50%) scale(${scale})`;
-  }
+  // Scale to fit while maintaining 16:9
+  const scale = Math.min(vw / targetWidth, vh / targetHeight);
 
-  // run on load and resize
-  window.addEventListener('resize', scaleAndCenter);
-  window.addEventListener('orientationchange', scaleAndCenter);
-  scaleAndCenter();
+  container.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  container.style.left = '50%';
+  container.style.top = '50%';
+}
+
+// Run on load and resize
+window.addEventListener('resize', scaleAndCenter);
+window.addEventListener('orientationchange', scaleAndCenter);
+scaleAndCenter();
 </script>
 
 </body>
