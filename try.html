@@ -9,6 +9,17 @@
         /* === Fonts === */
         @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600&display=swap');
 
+        * {
+            user-select: none;
+            /* Standard */
+            -webkit-user-select: none;
+            /* Chrome, Safari */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* IE10+ */
+        }
+
         /* === Theme variables === */
         :root {
             --gold: #e8c27c;
@@ -642,7 +653,7 @@
             gap: 32px;
             align-items: center;
             padding: 6px 24px;
-              border-bottom: 2px solid rgba(220, 173, 78, 0.362);
+            border-bottom: 2px solid rgba(220, 173, 78, 0.362);
             box-sizing: border-box;
             z-index: 9998;
             font-family: 'Cinzel', serif;
@@ -892,194 +903,194 @@
 
     <!-- === Scripts === -->
 
-   <script>
-    /* === Audio setup === */
-    const hoverSound = new Audio('sfx/hover.mp3');
-    const clickSound = new Audio('sfx/click.wav');
-    const equipSound = new Audio('sfx/equip.mp3');
-    const dragSound = new Audio('sfx/drag.mp3');
-    hoverSound.preload = clickSound.preload = equipSound.preload = 'auto';
+    <script>
+        /* === Audio setup === */
+        const hoverSound = new Audio('sfx/hover.mp3');
+        const clickSound = new Audio('sfx/click.wav');
+        const equipSound = new Audio('sfx/equip.mp3');
+        const dragSound = new Audio('sfx/drag.mp3');
+        hoverSound.preload = clickSound.preload = equipSound.preload = 'auto';
 
-    function tryPlay(audio) {
-        audio.currentTime = 0;
-        audio.play().catch(() => {});
-    }
+        function tryPlay(audio) {
+            audio.currentTime = 0;
+            audio.play().catch(() => { });
+        }
 
-    /* === Tabs (onclick) === */
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => { // onclick
-            tryPlay(clickSound);
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.inventory-grid').forEach(g => g.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(btn.dataset.tab).classList.add('active');
-        });
-    });
-
-    /* === Core variables === */
-    const uiWrap = document.getElementById('uiWrap');
-    const slots = document.querySelectorAll('.slot');
-    const items = document.querySelectorAll('.item');
-    const inventoryGrids = document.querySelectorAll('.inventory-grid');
-    let draggedItem = null;
-
-    /* === Category mapping === */
-    const categoryMap = {
-        weapon: 'weapons',
-        head: 'armor',
-        body: 'armor',
-        accessory: 'armor',
-        none: 'items'
-    };
-
-    /* === Drag system (ondragstart & ondragend) === */
-    uiWrap.addEventListener('dragstart', e => { // ondragstart
-        const item = e.target.closest('.item');
-        if (!item) return;
-        draggedItem = item;
-        item.classList.add('dragging');
-        tryPlay(dragSound);
-    });
-
-    uiWrap.addEventListener('dragend', e => { // ondragend
-        const item = e.target.closest('.item');
-        if (!item) return;
-        item.classList.remove('dragging');
-        draggedItem = null;
-    });
-
-    /* === Drop to Equipment Slots (ondrop, ondragover, mouse/focus events) === */
-    slots.forEach(slot => {
-        slot.addEventListener('mouseenter', () => tryPlay(hoverSound)); // onmouseenter
-        slot.addEventListener('dragover', e => e.preventDefault()); // ondragover
-        slot.addEventListener('drop', e => { // ondrop
-            e.preventDefault();
-            if (!draggedItem) return;
-            const requiredSlot = draggedItem.dataset.slot;
-            const targetSlot = slot.dataset.slot;
-
-            // ❌ Block wrong slot types
-            if (requiredSlot !== targetSlot) {
+        /* === Tabs (onclick) === */
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => { // onclick
                 tryPlay(clickSound);
-                return;
-            }
-
-            // Move existing equipped item back to inventory
-            if (slot.firstChild) {
-                const oldItem = slot.firstChild;
-                const cat = categoryMap[oldItem.dataset.slot] || 'items';
-                document.getElementById(cat).appendChild(oldItem);
-            }
-
-            // Equip new item
-            slot.innerHTML = '';
-            slot.appendChild(draggedItem);
-            tryPlay(equipSound);
-
-            // Show overlay if applicable
-            const overlayPath = draggedItem.dataset.overlay;
-            const overlayImg = document.querySelector(`.equip-overlay[data-slot="${targetSlot}"]`);
-            if (overlayImg) {
-                if (overlayPath) {
-                    overlayImg.src = overlayPath;
-                    overlayImg.style.display = 'block';
-                } else {
-                    overlayImg.style.display = 'none';
-                }
-            }
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.inventory-grid').forEach(g => g.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
         });
 
-        /* === Extra Event Types on Slots === */
-        slot.addEventListener('mousedown', () => slot.style.transform = 'scale(0.97)'); // onmousedown
-        slot.addEventListener('mouseup', () => slot.style.transform = ''); // onmouseup
-        slot.addEventListener('mouseout', () => slot.style.transform = ''); // onmouseout
-        slot.addEventListener('focus', () => slot.style.outline = '2px solid var(--accent)'); // onfocus
-        slot.addEventListener('blur', () => slot.style.outline = ''); // onblur
-        slot.addEventListener('change', () => console.log(`Slot changed: ${slot.dataset.slot}`)); // onchange
-    });
+        /* === Core variables === */
+        const uiWrap = document.getElementById('uiWrap');
+        const slots = document.querySelectorAll('.slot');
+        const items = document.querySelectorAll('.item');
+        const inventoryGrids = document.querySelectorAll('.inventory-grid');
+        let draggedItem = null;
 
-    /* === Drop to Inventory (Unequip) === */
-    inventoryGrids.forEach(grid => {
-        grid.style.minHeight = '120px';
-        grid.style.position = 'relative';
-        grid.style.border = '1px solid transparent';
-        grid.addEventListener('dragover', e => e.preventDefault()); // ondragover
-        grid.addEventListener('drop', e => { // ondrop
-            e.preventDefault();
-            if (!draggedItem) return;
-            const fromSlot = draggedItem.closest('.slot');
-            if (!fromSlot) return;
-            const itemType = draggedItem.dataset.slot;
-            const correctGrid = document.getElementById(categoryMap[itemType] || 'items');
+        /* === Category mapping === */
+        const categoryMap = {
+            weapon: 'weapons',
+            head: 'armor',
+            body: 'armor',
+            accessory: 'armor',
+            none: 'items'
+        };
 
-            if (grid.id !== correctGrid.id) {
-                tryPlay(clickSound);
-                return;
-            }
-
-            fromSlot.innerHTML = '';
-            correctGrid.appendChild(draggedItem);
-            tryPlay(equipSound);
-
-            const overlayImg = document.querySelector(`.equip-overlay[data-slot="${fromSlot.dataset.slot}"]`);
-            if (overlayImg) overlayImg.style.display = 'none';
+        /* === Drag system (ondragstart & ondragend) === */
+        uiWrap.addEventListener('dragstart', e => { // ondragstart
+            const item = e.target.closest('.item');
+            if (!item) return;
+            draggedItem = item;
+            item.classList.add('dragging');
+            tryPlay(dragSound);
         });
 
-        // Extra event types on inventory grids
-        grid.addEventListener('mousedown', () => grid.style.opacity = '0.85'); // onmousedown
-        grid.addEventListener('mouseup', () => grid.style.opacity = ''); // onmouseup
-        grid.addEventListener('mouseout', () => grid.style.opacity = ''); // onmouseout
-        grid.addEventListener('focus', () => grid.style.outline = '2px solid var(--accent)'); // onfocus
-        grid.addEventListener('blur', () => grid.style.outline = ''); // onblur
-        grid.addEventListener('change', () => console.log(`Inventory grid changed: ${grid.id}`)); // onchange
-    });
+        uiWrap.addEventListener('dragend', e => { // ondragend
+            const item = e.target.closest('.item');
+            if (!item) return;
+            item.classList.remove('dragging');
+            draggedItem = null;
+        });
 
-    /* === Items hover sounds & events === */
-    items.forEach(item => {
-        item.addEventListener('mouseenter', () => tryPlay(hoverSound)); // onmouseenter
-        item.addEventListener('mousedown', () => item.style.transform = 'scale(0.97)'); // onmousedown
-        item.addEventListener('mouseup', () => item.style.transform = ''); // onmouseup
-        item.addEventListener('mouseout', () => item.style.transform = ''); // onmouseout
-        item.addEventListener('focus', () => item.style.outline = '2px solid var(--accent)'); // onfocus
-        item.addEventListener('blur', () => item.style.outline = ''); // onblur
-        item.addEventListener('change', () => console.log(`Item changed: ${item.dataset.item}`)); // onchange
-        item.setAttribute('tabindex', '0'); // Enable focus/blur
-    });
-
-    /* === Slot Labels === */
-    document.querySelectorAll('.slot').forEach(slot => {
-        const label = document.createElement('div');
-        label.textContent = slot.dataset.slot.charAt(0).toUpperCase() + slot.dataset.slot.slice(1);
-        label.style.fontSize = '12px';
-        label.style.color = 'rgba(255, 235, 190, 0.85)';
-        label.style.textAlign = 'center';
-        label.style.marginTop = '4px';
-        label.style.pointerEvents = 'none';
-        slot.insertAdjacentElement('afterend', label);
-    });
-
-    /* === Title Screen Fade (onload) === */
-    window.addEventListener('load', () => { // onload
-        setTimeout(() => {
-            document.getElementById('titleScreen').classList.add('hidden');
-        }, 2000);
-    });
-
-    /* === Auto visual refresh for equip slot borders === */
-    function refreshEquipSlots() {
+        /* === Drop to Equipment Slots (ondrop, ondragover, mouse/focus events) === */
         slots.forEach(slot => {
-            if (!slot.querySelector('.item')) {
-                slot.style.border = '1px solid transparent';
-            } else {
-                slot.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06))';
-            }
-        });
-    }
+            slot.addEventListener('mouseenter', () => tryPlay(hoverSound)); // onmouseenter
+            slot.addEventListener('dragover', e => e.preventDefault()); // ondragover
+            slot.addEventListener('drop', e => { // ondrop
+                e.preventDefault();
+                if (!draggedItem) return;
+                const requiredSlot = draggedItem.dataset.slot;
+                const targetSlot = slot.dataset.slot;
 
-    const observer = new MutationObserver(refreshEquipSlots);
-    observer.observe(document.querySelector('.equipment'), { childList: true, subtree: true });
-    refreshEquipSlots();
-</script>
+                // ❌ Block wrong slot types
+                if (requiredSlot !== targetSlot) {
+                    tryPlay(clickSound);
+                    return;
+                }
+
+                // Move existing equipped item back to inventory
+                if (slot.firstChild) {
+                    const oldItem = slot.firstChild;
+                    const cat = categoryMap[oldItem.dataset.slot] || 'items';
+                    document.getElementById(cat).appendChild(oldItem);
+                }
+
+                // Equip new item
+                slot.innerHTML = '';
+                slot.appendChild(draggedItem);
+                tryPlay(equipSound);
+
+                // Show overlay if applicable
+                const overlayPath = draggedItem.dataset.overlay;
+                const overlayImg = document.querySelector(`.equip-overlay[data-slot="${targetSlot}"]`);
+                if (overlayImg) {
+                    if (overlayPath) {
+                        overlayImg.src = overlayPath;
+                        overlayImg.style.display = 'block';
+                    } else {
+                        overlayImg.style.display = 'none';
+                    }
+                }
+            });
+
+            /* === Extra Event Types on Slots === */
+            slot.addEventListener('mousedown', () => slot.style.transform = 'scale(0.97)'); // onmousedown
+            slot.addEventListener('mouseup', () => slot.style.transform = ''); // onmouseup
+            slot.addEventListener('mouseout', () => slot.style.transform = ''); // onmouseout
+            slot.addEventListener('focus', () => slot.style.outline = '2px solid var(--accent)'); // onfocus
+            slot.addEventListener('blur', () => slot.style.outline = ''); // onblur
+            slot.addEventListener('change', () => console.log(`Slot changed: ${slot.dataset.slot}`)); // onchange
+        });
+
+        /* === Drop to Inventory (Unequip) === */
+        inventoryGrids.forEach(grid => {
+            grid.style.minHeight = '120px';
+            grid.style.position = 'relative';
+            grid.style.border = '1px solid transparent';
+            grid.addEventListener('dragover', e => e.preventDefault()); // ondragover
+            grid.addEventListener('drop', e => { // ondrop
+                e.preventDefault();
+                if (!draggedItem) return;
+                const fromSlot = draggedItem.closest('.slot');
+                if (!fromSlot) return;
+                const itemType = draggedItem.dataset.slot;
+                const correctGrid = document.getElementById(categoryMap[itemType] || 'items');
+
+                if (grid.id !== correctGrid.id) {
+                    tryPlay(clickSound);
+                    return;
+                }
+
+                fromSlot.innerHTML = '';
+                correctGrid.appendChild(draggedItem);
+                tryPlay(equipSound);
+
+                const overlayImg = document.querySelector(`.equip-overlay[data-slot="${fromSlot.dataset.slot}"]`);
+                if (overlayImg) overlayImg.style.display = 'none';
+            });
+
+            // Extra event types on inventory grids
+            grid.addEventListener('mousedown', () => grid.style.opacity = '0.85'); // onmousedown
+            grid.addEventListener('mouseup', () => grid.style.opacity = ''); // onmouseup
+            grid.addEventListener('mouseout', () => grid.style.opacity = ''); // onmouseout
+            grid.addEventListener('focus', () => grid.style.outline = '2px solid var(--accent)'); // onfocus
+            grid.addEventListener('blur', () => grid.style.outline = ''); // onblur
+            grid.addEventListener('change', () => console.log(`Inventory grid changed: ${grid.id}`)); // onchange
+        });
+
+        /* === Items hover sounds & events === */
+        items.forEach(item => {
+            item.addEventListener('mouseenter', () => tryPlay(hoverSound)); // onmouseenter
+            item.addEventListener('mousedown', () => item.style.transform = 'scale(0.97)'); // onmousedown
+            item.addEventListener('mouseup', () => item.style.transform = ''); // onmouseup
+            item.addEventListener('mouseout', () => item.style.transform = ''); // onmouseout
+            item.addEventListener('focus', () => item.style.outline = '2px solid var(--accent)'); // onfocus
+            item.addEventListener('blur', () => item.style.outline = ''); // onblur
+            item.addEventListener('change', () => console.log(`Item changed: ${item.dataset.item}`)); // onchange
+            item.setAttribute('tabindex', '0'); // Enable focus/blur
+        });
+
+        /* === Slot Labels === */
+        document.querySelectorAll('.slot').forEach(slot => {
+            const label = document.createElement('div');
+            label.textContent = slot.dataset.slot.charAt(0).toUpperCase() + slot.dataset.slot.slice(1);
+            label.style.fontSize = '12px';
+            label.style.color = 'rgba(255, 235, 190, 0.85)';
+            label.style.textAlign = 'center';
+            label.style.marginTop = '4px';
+            label.style.pointerEvents = 'none';
+            slot.insertAdjacentElement('afterend', label);
+        });
+
+        /* === Title Screen Fade (onload) === */
+        window.addEventListener('load', () => { // onload
+            setTimeout(() => {
+                document.getElementById('titleScreen').classList.add('hidden');
+            }, 2000);
+        });
+
+        /* === Auto visual refresh for equip slot borders === */
+        function refreshEquipSlots() {
+            slots.forEach(slot => {
+                if (!slot.querySelector('.item')) {
+                    slot.style.border = '1px solid transparent';
+                } else {
+                    slot.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06))';
+                }
+            });
+        }
+
+        const observer = new MutationObserver(refreshEquipSlots);
+        observer.observe(document.querySelector('.equipment'), { childList: true, subtree: true });
+        refreshEquipSlots();
+    </script>
 
 
 
