@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+    <title>Character Sheet  ⌜Kotobuki⌟</title>
+<style>
+  html,body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    background: #000;
+    overflow: hidden;
+  }
+
+  /* container positioned at center of viewport */
+  #container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1280px;
+    height: 720px;
+    /* IMPORTANT: center as origin so translate+scale keep it centered */
+    transform-origin: center center;
+    /* no transform here: JS will set both translate and scale in one line */
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Example content: you will replace this with your actual markup */
+  .tv {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg,#121212,#050505);
+    border-radius: 12px;
+    border: 6px solid #0f0f0f;
+    box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.5);
+    overflow: hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color: #d1d1d1;
+  }
+
+  /* tiny visual so you can see exact centeredness */
+#app {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    background: #fff;
+  }
+  /* optional: show viewport guides for debug (comment out later) */
+  /* .debug-viewport { position: fixed; top:0; left:0; color: lime; } */
+</style>
+</head>
+<body>
+
+<div id="container">
+  <div class="tv">
+      <iframe id="app" src="try.html">
+      </iframe>
+  </div>
+</div>
+
+<script>
+  function scaleAndCenter() {
+    const container = document.getElementById('container');
+
+    // compute scale to fit while preserving aspect ratio (16:9)
+    const scale = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+
+    // set transform — both translate (center) and scale in one line
+    // IMPORTANT: translate uses percentages of the element itself, so we must keep translate and scale together
+    container.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  }
+
+  // run on load and resize
+  window.addEventListener('resize', scaleAndCenter);
+  window.addEventListener('orientationchange', scaleAndCenter);
+  scaleAndCenter();
+</script>
+
+</body>
+</html>

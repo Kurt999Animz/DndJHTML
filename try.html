@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Character Sheet ⌜Kotobuki⌟</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        /* === Fonts === */
+        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600&display=swap');
+
+        /* === Theme variables === */
+        :root {
+            --gold: #e8c27c;
+            --gold-2: #f7e3b0;
+            --panel-bg: rgba(38, 24, 12, 0.78);
+            --text: #fdf7e2;
+            --accent: #7fd6d2;
+            /* teal-blue accent */
+            --glass-border: rgba(255, 230, 180, 0.18);
+            --glow: 0 0 16px rgba(255, 220, 145, 0.22);
+            --transition: 220ms cubic-bezier(.2, .9, .3, 1);
+        }
+
+        /* Minimal transparent scrollbar (Chrome, Edge, Safari) */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: transparent;
+            /* invisible track */
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.35);
+            /* semi-transparent black thumb */
+            border-radius: 10px;
+            transition: background 0.3s ease, width 0.2s ease;
+        }
+
+        body::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.55);
+            /* darker when hovered */
+            width: 10px;
+        }
+
+        /* Firefox */
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
+        }
+
+
+        /* === Base page / backdrop === */
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cinzel', serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: var(--text);
+            background: url('assets/bg_interior_blur.jpg') center/cover no-repeat fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Title fade-in overlay */
+        .title-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(10, 6, 4, 0.6), rgba(10, 6, 4, 0.55));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 500ms ease, visibility 500ms ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .title-screen::after {
+            content: "";
+            /* required for pseudo-element to appear */
+            position: absolute;
+            inset: 0;
+            /* covers entire parent */
+            background: black;
+            z-index: 10000;
+            animation: fadeOut 700ms forwards;
+            animation-delay: 300ms;
+
+        }
+
+        .title-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 28px 48px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(255, 250, 230, 0.06), rgba(0, 0, 0, 0.15));
+            border: 1px solid rgba(255, 230, 180, 0.14);
+            box-shadow: 0 10px 60px rgba(0, 0, 0, 0.7), 0 0 26px rgba(255, 220, 145, 0.06);
+            text-align: center;
+            animation: gobig 2500ms ease forwards;
+        }
+
+        .title-card h1 {
+            margin: 0;
+            font-family: 'Cinzel', serif;
+            font-size: 34px;
+            letter-spacing: 2px;
+            color: var(--gold-2);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .title-card p {
+            margin: 0;
+            color: rgba(255, 240, 210, 0.85);
+            font-size: 14px;
+        }
+
+        @keyframes gobig {
+            from {
+                scale: 1;
+            }
+
+            to {
+                scale: 1.3
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1
+            }
+
+            to {
+                opacity: 0
+            }
+        }
+
+        .title-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* === Floating UI container (overrides original grid visuals) === */
+        .ui-wrap {
+            width: calc(100vw - 80px);
+            max-width: 1600px;
+            height: calc(100vh - 80px);
+            max-height: 960px;
+            border-radius: 22px;
+            padding: 28px;
+            box-sizing: border-box;
+            background: linear-gradient(180deg, rgba(71, 46, 21, 0.533), rgba(53, 37, 26, 0.429));
+            border: 2px solid var(--glass-border);
+            backdrop-filter: blur(8px) saturate(110%);
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1.2fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 24px;
+            position: relative;
+            overflow: visible;
+            transition: box-shadow var(--transition);
+        }
+
+        .ui-wrap:hover {
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.311), inset 0 0 40px 4rgba(59, 44, 14, 0.02);
+        }
+
+        /* === Panels (original .section) === */
+        .section {
+            border-radius: 14px;
+            border: 1px solid rgba(255, 240, 200, 0.06);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            background: rgba(38, 24, 12, 0.7);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.45);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .section:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--glow);
+        }
+
+        /* subtle header stripe */
+        .section::before {
+            content: '';
+            display: block;
+            height: 6px;
+            background: linear-gradient(90deg, rgba(255, 215, 120, 0.14), rgba(127, 214, 210, 0.08));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+
+        /* === Specific layout mapping (keeps your original grid positions) === */
+        .profile {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+        }
+
+        .stats-panel {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+        }
+
+        .center {
+            grid-column: 2 / 3;
+            grid-row: 1 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .inventory-panel {
+            grid-column: 3 / 4;
+            grid-row: 1 / 2;
+        }
+
+        .equipment-panel {
+            grid-column: 3 / 4;
+            grid-row: 2 / 3;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* === Avatar / profile === */
+        .avatar-box {
+            padding: 18px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .avatar {
+            width: 100%;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .avatar img {
+            width: 220px;
+            height: 220px;
+            border-radius: 999px;
+            border: 2px solid rgba(255, 230, 170, 0.12);
+            object-fit: cover;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 18px rgba(255, 200, 120, 0.06);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .avatar img.glow {
+            box-shadow: 0 20px 60px rgba(250, 200, 120, 0.12), 0 0 36px rgba(255, 210, 130, 0.12);
+            filter: drop-shadow(0 0 14px rgba(255, 210, 130, 0.16));
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            font-size: 16px;
+            line-height: 1.45;
+            color: var(--gold-2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+        }
+
+        .info strong {
+            color: var(--gold);
+            font-weight: 600;
+            margin-right: 6px;
+        }
+
+        /* === Stats panel (list style) === */
+        .stats {
+            padding: 18px;
+            box-sizing: border-box;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .stats h2 {
+            font-size: 18px;
+            margin: 0 0 12px 0;
+            color: var(--gold-2);
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 240, 200, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .stats ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            color: #f7f1da;
+        }
+
+        .stats li {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 6px;
+            font-size: 15px;
+            border-radius: 8px;
+            transition: background var(--transition);
+        }
+
+        .stats li:hover {
+            background: linear-gradient(90deg, rgba(255, 230, 150, 0.02), rgba(127, 214, 210, 0.01));
+        }
+
+        /* === Center character showcase === */
+        .character-showcase {
+            width: 500px;
+            height: 820px;
+            background: radial-gradient(circle at 50% 22%, rgba(255, 235, 180, 0.06), transparent 40%), rgba(0, 0, 0, 0.06);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: visible;
+            padding: 18px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 230, 170, 0.03);
+            backdrop-filter: blur(2px);
+        }
+
+        /* floating portrait (uses user's assets/av) */
+        .character-showcase .portrait-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 360px;
+            height: 560px;
+            border-radius: 18px;
+            pointer-events: none;
+        }
+
+        .portrait {
+            width: 320px;
+            height: auto;
+            border-radius: 12px;
+            transform-origin: center;
+            animation: idle-bob 3500ms ease-in-out infinite;
+            filter: drop-shadow(0 20px 80px rgba(0, 0, 0, 0.6));
+            transition: box-shadow var(--transition), transform var(--transition);
+        }
+
+        /* subtle aura glow around portrait */
+        .portrait-aura {
+            position: absolute;
+            inset: -16px;
+            border-radius: 16px;
+            pointer-events: none;
+            background: radial-gradient(closest-side, rgba(255, 215, 120, 0.09), rgba(127, 214, 210, 0.03) 40%, transparent 55%);
+            filter: blur(10px);
+            opacity: 0.95;
+            transition: opacity var(--transition);
+        }
+
+        @keyframes idle-bob {
+
+            0%,
+            100% {
+                transform: translateY(0px) scale(1);
+            }
+
+            50% {
+                transform: translateY(-8px) scale(1.01);
+            }
+        }
+
+        /* particles (light orbs) */
+        .particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: visible;
+        }
+
+        .orb {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(255, 234, 170, 0.98) 0%, rgba(255, 200, 120, 0.6) 55%, rgba(127, 214, 210, 0.08) 100%);
+            filter: blur(0.6px);
+            opacity: 0;
+            animation: orb-rise linear infinite;
+        }
+
+        @keyframes orb-rise {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.6);
+            }
+
+            10% {
+                opacity: 0.9;
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: translateY(-80px) scale(1.1);
+            }
+
+            90% {
+                opacity: 0.1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-160px) scale(0.4);
+            }
+        }
+
+        /* === Inventory / tabs === */
+        .inventory {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-sizing: border-box;
+            height: 100%;
+        }
+
+        .section h2 {
+            font-size: 18px;
+            margin: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 240, 200, 0.03);
+            color: var(--gold-2);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .tab-btn {
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            color: #f9f6eb;
+            cursor: pointer;
+            font-size: 13px;
+            transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(180deg, rgba(255, 240, 200, 0.02), rgba(127, 214, 210, 0.01));
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(180deg, rgba(255, 230, 150, 0.08), rgba(255, 230, 150, 0.02));
+            border-color: rgba(255, 230, 160, 0.12);
+        }
+
+        .inventory-grid {
+            display: none;
+            margin-top: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+            gap: 12px;
+        }
+
+        .inventory-grid.active {
+            display: grid;
+        }
+
+        .slot,
+        .item {
+            width: 72px;
+            height: 72px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.06));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform var(--transition), box-shadow var(--transition);
+            cursor: grab;
+        }
+
+        .slot {
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .slot:hover,
+        .item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .slot img,
+        .item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        /* === Equipment layout === */
+        .equipment {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-sizing: border-box;
+            height: 100%;
+        }
+
+        .equip-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            position: relative;
+        }
+
+        .equip-left,
+        .equip-right {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .equip-center {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #mini-avatar-img {
+            width: auto;
+            height: 210px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 240, 200, 0.04);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .equip-overlay {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            height: 210px;
+            display: none;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        /* dragging */
+        .dragging {
+            opacity: 0.45;
+            transform: scale(0.94) rotate(-2deg);
+            cursor: grabbing;
+        }
+
+        /* buttons (where actions appear in earlier sample) */
+        .button {
+            display: block;
+            background: linear-gradient(180deg, rgba(255, 223, 150, 0.78), rgba(180, 120, 60, 0.22));
+            color: #3b2618;
+            border-radius: 12px;
+            padding: 10px 16px;
+            text-align: center;
+            width: 100%;
+            max-width: 220px;
+            cursor: pointer;
+            font-family: 'MedievalSharp', cursive;
+            font-weight: 700;
+            border: 1px solid rgba(255, 230, 180, 0.12);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .button:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+        }
+
+        /* small responsive fallback */
+        @media (max-width:1100px) {
+            .ui-wrap {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                padding: 18px;
+                gap: 14px;
+                height: auto;
+                max-height: none;
+                width: calc(100vw - 40px);
+                max-width: 1100px;
+            }
+
+            .center {
+                grid-column: 1/2;
+                grid-row: 2/3;
+            }
+
+            .profile,
+            .stats-panel,
+            .inventory-panel,
+            .equipment-panel {
+                grid-column: 1/2;
+            }
+
+            .character-showcase {
+                width: 100%;
+                height: 520px;
+            }
+        }
+
+        /* === Top Bar === */
+        #topBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(38, 24, 12, 0.85);
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            padding: 6px 24px;
+              border-bottom: 2px solid rgba(220, 173, 78, 0.362);
+            box-sizing: border-box;
+            z-index: 9998;
+            font-family: 'Cinzel', serif;
+            color: var(--gold-2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            transition: padding 0.3s ease;
+        }
+
+        #topBar:hover {
+            padding: 12px 24px;
+        }
+
+        #topBar .stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        #topBar .stat .bar-container {
+            width: 160px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 230, 180, 0.12);
+            margin-left: 6px;
+        }
+
+        #topBar .bar {
+            height: 100%;
+            border-radius: 6px;
+        }
+
+        #topBar .hp-bar {
+            background: linear-gradient(90deg, #f75c5c, #ff9a6f);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+
+        #topBar .mp-bar {
+            background: linear-gradient(90deg, #5c9cf7, #6fd0ff);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+
+        #topBar .stat.gold {
+            font-size: 16px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Title fade-in screen -->
+    <div id="titleScreen" class="title-screen">
+        <div class="title-card">
+            <h1>Character sheet</h1>
+            <p> ⌜Kotobuki⌟</p>
+        </div>
+    </div>
+
+    <!-- === Top Bar === -->
+    <div id="topBar">
+        <div class="stat hp">
+            <span class="label">HP:</span>
+            <span class="value" id="hpCurrent">100</span> / <span id="hpMax">100</span>
+            <div class="bar-container">
+                <div class="bar hp-bar" id="hpBar"></div>
+            </div>
+        </div>
+
+        <div class="stat mp">
+            <span class="label">MP:</span>
+            <span class="value" id="mpCurrent">50</span> / <span id="mpMax">50</span>
+            <div class="bar-container">
+                <div class="bar mp-bar" id="mpBar"></div>
+            </div>
+        </div>
+
+        <div class="stat gold">
+            <span class="label">Gold:</span> <span id="goldAmount">500</span>
+        </div>
+    </div>
+
+    <!-- Main UI -->
+    <div class="ui-wrap" id="uiWrap">
+
+        <!-- Profile -->
+        <div class="section profile">
+            <div class="avatar-box">
+                <div class="avatar-info" style="display:flex; gap:18px; align-items:center;">
+                    <div class="avatar">
+                        <img id="profileAvatar" src="assets/profile.png" alt="Avatar" class="glow">
+                    </div>
+                    <div class="info">
+                        <div><strong>Name:</strong> Kotobuki</div>
+                        <div><strong>Race:</strong> Human</div>
+                        <div><strong>Class:</strong> Wizard</div>
+                        <div><strong>Level:</strong> 1</div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center -->
+        <div class="section center">
+            <div class="character-showcase" title="Character Showcase">
+                <div class="particles" aria-hidden="true">
+                    <!-- several orbs with different positions/delays -->
+                    <div class="orb"
+                        style="left:48%; bottom:20%; width:10px; height:10px; animation-duration:6s; animation-delay:0s;">
+                    </div>
+                    <div class="orb"
+                        style="left:30%; bottom:10%; width:12px; height:12px; animation-duration:7.5s; animation-delay:1s;">
+                    </div>
+                    <div class="orb"
+                        style="left:70%; bottom:14%; width:8px; height:8px; animation-duration:5.5s; animation-delay:0.6s;">
+                    </div>
+                    <div class="orb"
+                        style="left:60%; bottom:6%; width:16px; height:16px; animation-duration:8s; animation-delay:2.2s;">
+                    </div>
+                </div>
+
+                <div class="portrait-wrap">
+                    <div class="portrait-aura"></div>
+                    <img id="centerPortrait" class="portrait" src="assets/av" alt="Kotobuki portrait">
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory -->
+        <div class="section inventory-panel">
+            <div class="inventory">
+                <h2>Inventory</h2>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab-btn active" data-tab="items">Items</div>
+                    <div class="tab-btn" data-tab="armor">Armor</div>
+                    <div class="tab-btn" data-tab="weapons">Weapons</div>
+                    <div class="tab-btn" data-tab="consumables">Consumables</div>
+                </div>
+
+                <!-- Grids -->
+                <div class="inventory-grid active" id="items">
+                    <div class="item" draggable="true" data-item="off-magic-book" data-slot="none">
+                        <img src="items/book1.png" alt="Offensive Magic Book">
+                    </div>
+                    <div class="item" draggable="true" data-item="def-magic-book" data-slot="none">
+                        <img src="items/book2.png" alt="Defensive Magic Book">
+                    </div>
+                    <div class="item" draggable="true" data-item="fire-magic-book" data-slot="none">
+                        <img src="items/book3.png" alt="Fire Magic Basics Book">
+                    </div>
+                    <div class="item" draggable="true" data-item="adv-ice-book" data-slot="none">
+                        <img src="items/book4.png" alt="Advanced Ice Magic Book">
+                    </div>
+                </div>
+
+                <div class="inventory-grid" id="armor">
+                    <div class="item" draggable="true" data-item="hat" data-slot="head"
+                        data-overlay="assets/eqpav/hat.png">
+                        <img src="items/hat.png" alt="Wizard Hat">
+                    </div>
+                    <div class="item" draggable="true" data-item="robe" data-slot="body"
+                        data-overlay="assets/eqpav/robe.png">
+                        <img src="items/robe.png" alt="Wizard Robe">
+                    </div>
+                    <div class="item" draggable="true" data-item="life-amulet" data-slot="accessory">
+                        <img src="items/amulet.png" alt="Life Amulet">
+                    </div>
+                </div>
+
+                <div class="inventory-grid" id="weapons">
+                    <div class="item" draggable="true" data-item="staff" data-slot="weapon"
+                        data-overlay="assets/eqpav/stf.png">
+                        <img src="items/staff.png" alt="Old Ice Staff">
+                    </div>
+                </div>
+
+                <div class="inventory-grid" id="consumables">
+                    <div class="item" draggable="true" data-item="healing-potion" data-slot="none">
+                        <img src="items/heal_potion.png" alt="Healing Potion x5">
+                    </div>
+                    <div class="item" draggable="true" data-item="mana-potion" data-slot="none">
+                        <img src="items/mana_potion.png" alt="Mana Potion x10">
+                    </div>
+                    <div class="item" draggable="true" data-item="rury-leaf" data-slot="none">
+                        <img src="items/leaf.png" alt="Rury Leaf x50">
+                    </div>
+                    <div class="item" draggable="true" data-item="baked-rury-pie" data-slot="none">
+                        <img src="items/pie.png" alt="Baked Rury Pie x3">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="section stats-panel">
+            <div class="stats">
+                <h2>Stats</h2>
+                <ul>
+                    <li><span>STR</span> <span>10</span></li>
+                    <li><span>DEX</span> <span>12</span></li>
+                    <li><span>CON</span> <span>8</span></li>
+                    <li><span>INT</span> <span>15</span></li>
+                    <li><span>WIS</span> <span>14</span></li>
+                    <li><span>CHA</span> <span>13</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Equipment -->
+        <div class="section equipment-panel">
+            <div class="equipment">
+                <h2>Equipment</h2>
+                <div class="equip-layout">
+                    <div class="equip-left">
+                        <div class="slot" data-slot="head"></div>
+                        <div class="slot" data-slot="body"></div>
+                    </div>
+
+                    <div class="equip-center">
+                        <img id="mini-avatar-img" src="assets/eqpav/av.png" alt="Mini Avatar">
+                        <img id="overlay-head" class="equip-overlay" data-slot="head">
+                        <img id="overlay-body" class="equip-overlay" data-slot="body">
+                        <img id="overlay-weapon" class="equip-overlay" data-slot="weapon">
+                    </div>
+
+                    <div class="equip-right">
+                        <div class="slot" data-slot="weapon"></div>
+                        <div class="slot" data-slot="accessory"></div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- === Scripts === -->
+
+   <script>
+    /* === Audio setup === */
+    const hoverSound = new Audio('sfx/hover.mp3');
+    const clickSound = new Audio('sfx/click.wav');
+    const equipSound = new Audio('sfx/equip.mp3');
+    const dragSound = new Audio('sfx/drag.mp3');
+    hoverSound.preload = clickSound.preload = equipSound.preload = 'auto';
+
+    function tryPlay(audio) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+    }
+
+    /* === Tabs (onclick) === */
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => { // onclick
+            tryPlay(clickSound);
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.inventory-grid').forEach(g => g.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    /* === Core variables === */
+    const uiWrap = document.getElementById('uiWrap');
+    const slots = document.querySelectorAll('.slot');
+    const items = document.querySelectorAll('.item');
+    const inventoryGrids = document.querySelectorAll('.inventory-grid');
+    let draggedItem = null;
+
+    /* === Category mapping === */
+    const categoryMap = {
+        weapon: 'weapons',
+        head: 'armor',
+        body: 'armor',
+        accessory: 'armor',
+        none: 'items'
+    };
+
+    /* === Drag system (ondragstart & ondragend) === */
+    uiWrap.addEventListener('dragstart', e => { // ondragstart
+        const item = e.target.closest('.item');
+        if (!item) return;
+        draggedItem = item;
+        item.classList.add('dragging');
+        tryPlay(dragSound);
+    });
+
+    uiWrap.addEventListener('dragend', e => { // ondragend
+        const item = e.target.closest('.item');
+        if (!item) return;
+        item.classList.remove('dragging');
+        draggedItem = null;
+    });
+
+    /* === Drop to Equipment Slots (ondrop, ondragover, mouse/focus events) === */
+    slots.forEach(slot => {
+        slot.addEventListener('mouseenter', () => tryPlay(hoverSound)); // onmouseenter
+        slot.addEventListener('dragover', e => e.preventDefault()); // ondragover
+        slot.addEventListener('drop', e => { // ondrop
+            e.preventDefault();
+            if (!draggedItem) return;
+            const requiredSlot = draggedItem.dataset.slot;
+            const targetSlot = slot.dataset.slot;
+
+            // ❌ Block wrong slot types
+            if (requiredSlot !== targetSlot) {
+                tryPlay(clickSound);
+                return;
+            }
+
+            // Move existing equipped item back to inventory
+            if (slot.firstChild) {
+                const oldItem = slot.firstChild;
+                const cat = categoryMap[oldItem.dataset.slot] || 'items';
+                document.getElementById(cat).appendChild(oldItem);
+            }
+
+            // Equip new item
+            slot.innerHTML = '';
+            slot.appendChild(draggedItem);
+            tryPlay(equipSound);
+
+            // Show overlay if applicable
+            const overlayPath = draggedItem.dataset.overlay;
+            const overlayImg = document.querySelector(`.equip-overlay[data-slot="${targetSlot}"]`);
+            if (overlayImg) {
+                if (overlayPath) {
+                    overlayImg.src = overlayPath;
+                    overlayImg.style.display = 'block';
+                } else {
+                    overlayImg.style.display = 'none';
+                }
+            }
+        });
+
+        /* === Extra Event Types on Slots === */
+        slot.addEventListener('mousedown', () => slot.style.transform = 'scale(0.97)'); // onmousedown
+        slot.addEventListener('mouseup', () => slot.style.transform = ''); // onmouseup
+        slot.addEventListener('mouseout', () => slot.style.transform = ''); // onmouseout
+        slot.addEventListener('focus', () => slot.style.outline = '2px solid var(--accent)'); // onfocus
+        slot.addEventListener('blur', () => slot.style.outline = ''); // onblur
+        slot.addEventListener('change', () => console.log(`Slot changed: ${slot.dataset.slot}`)); // onchange
+    });
+
+    /* === Drop to Inventory (Unequip) === */
+    inventoryGrids.forEach(grid => {
+        grid.style.minHeight = '120px';
+        grid.style.position = 'relative';
+        grid.style.border = '1px solid transparent';
+        grid.addEventListener('dragover', e => e.preventDefault()); // ondragover
+        grid.addEventListener('drop', e => { // ondrop
+            e.preventDefault();
+            if (!draggedItem) return;
+            const fromSlot = draggedItem.closest('.slot');
+            if (!fromSlot) return;
+            const itemType = draggedItem.dataset.slot;
+            const correctGrid = document.getElementById(categoryMap[itemType] || 'items');
+
+            if (grid.id !== correctGrid.id) {
+                tryPlay(clickSound);
+                return;
+            }
+
+            fromSlot.innerHTML = '';
+            correctGrid.appendChild(draggedItem);
+            tryPlay(equipSound);
+
+            const overlayImg = document.querySelector(`.equip-overlay[data-slot="${fromSlot.dataset.slot}"]`);
+            if (overlayImg) overlayImg.style.display = 'none';
+        });
+
+        // Extra event types on inventory grids
+        grid.addEventListener('mousedown', () => grid.style.opacity = '0.85'); // onmousedown
+        grid.addEventListener('mouseup', () => grid.style.opacity = ''); // onmouseup
+        grid.addEventListener('mouseout', () => grid.style.opacity = ''); // onmouseout
+        grid.addEventListener('focus', () => grid.style.outline = '2px solid var(--accent)'); // onfocus
+        grid.addEventListener('blur', () => grid.style.outline = ''); // onblur
+        grid.addEventListener('change', () => console.log(`Inventory grid changed: ${grid.id}`)); // onchange
+    });
+
+    /* === Items hover sounds & events === */
+    items.forEach(item => {
+        item.addEventListener('mouseenter', () => tryPlay(hoverSound)); // onmouseenter
+        item.addEventListener('mousedown', () => item.style.transform = 'scale(0.97)'); // onmousedown
+        item.addEventListener('mouseup', () => item.style.transform = ''); // onmouseup
+        item.addEventListener('mouseout', () => item.style.transform = ''); // onmouseout
+        item.addEventListener('focus', () => item.style.outline = '2px solid var(--accent)'); // onfocus
+        item.addEventListener('blur', () => item.style.outline = ''); // onblur
+        item.addEventListener('change', () => console.log(`Item changed: ${item.dataset.item}`)); // onchange
+        item.setAttribute('tabindex', '0'); // Enable focus/blur
+    });
+
+    /* === Slot Labels === */
+    document.querySelectorAll('.slot').forEach(slot => {
+        const label = document.createElement('div');
+        label.textContent = slot.dataset.slot.charAt(0).toUpperCase() + slot.dataset.slot.slice(1);
+        label.style.fontSize = '12px';
+        label.style.color = 'rgba(255, 235, 190, 0.85)';
+        label.style.textAlign = 'center';
+        label.style.marginTop = '4px';
+        label.style.pointerEvents = 'none';
+        slot.insertAdjacentElement('afterend', label);
+    });
+
+    /* === Title Screen Fade (onload) === */
+    window.addEventListener('load', () => { // onload
+        setTimeout(() => {
+            document.getElementById('titleScreen').classList.add('hidden');
+        }, 2000);
+    });
+
+    /* === Auto visual refresh for equip slot borders === */
+    function refreshEquipSlots() {
+        slots.forEach(slot => {
+            if (!slot.querySelector('.item')) {
+                slot.style.border = '1px solid transparent';
+            } else {
+                slot.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06))';
+            }
+        });
+    }
+
+    const observer = new MutationObserver(refreshEquipSlots);
+    observer.observe(document.querySelector('.equipment'), { childList: true, subtree: true });
+    refreshEquipSlots();
+</script>
+
+
+
+</body>
+
+</html>
