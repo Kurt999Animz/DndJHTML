@@ -615,7 +615,7 @@
                 </div>
                 <div class="portrait-wrap">
                     <div class="portrait-aura"></div>
-                    <img id="centerPortrait" class="portrait" src="assets/av" alt="Kotobuki portrait">
+                    <img id="centerPortrait" class="portrait" src="assets/avatar.png" alt="Kotobuki portrait">
                 </div>
             </div>
         </div>
@@ -645,13 +645,13 @@
                 </div>
                 <div class="inventory-grid" id="armor">
                     <div class="item" draggable="true" data-item="hat" data-slot="head" data-overlay="assets/eqpav/hat.png">
-                        <img src="items/hat.png" alt="Wizard Hat">
+                        <img src="assets/items/wzrdhat.png" alt="Wizard Hat">
                     </div>
                     <div class="item" draggable="true" data-item="robe" data-slot="body" data-overlay="assets/eqpav/robe.png">
-                        <img src="items/robe.png" alt="Wizard Robe">
+                        <img src="assets/items/wzrdrobe.png" alt="Wizard Robe">
                     </div>
                     <div class="item" draggable="true" data-item="life-amulet" data-slot="accessory">
-                        <img src="items/amulet.png" alt="Life Amulet">
+                        <img src="assets/items/lifeamulet.png" alt="Life Amulet">
                     </div>
                 </div>
                 <div class="inventory-grid" id="weapons">
@@ -664,10 +664,10 @@
                         <img src="assets/items/healpt.png" alt="Healing Potion x5">
                     </div>
                     <div class="item" draggable="true" data-item="mana-potion" data-slot="none">
-                        <img src="items/mana_potion.png" alt="Mana Potion x10">
+                        <img src="assets/items/manapt.png"alt="Mana Potion x10">
                     </div>
                     <div class="item" draggable="true" data-item="rury-leaf" data-slot="none">
-                        <img src="items/leaf.png" alt="Rury Leaf x50">
+                        <img src="assets/items/ruryleaf.png" alt="Rury Leaf x50">
                     </div>
                     <div class="item" draggable="true" data-item="baked-rury-pie" data-slot="none">
                         <img src="items/pie.png" alt="Baked Rury Pie x3">
@@ -721,6 +721,7 @@
         const clickSound = new Audio('sfx/click.wav');
         const equipSound = new Audio('sfx/equip.mp3');
         const dragSound = new Audio('sfx/drag.mp3');
+        const openSound = new Audio('sfx/open.mp3');
         hoverSound.preload = clickSound.preload = equipSound.preload = 'auto';
         function tryPlay(audio) {
             audio.currentTime = 0;
@@ -862,6 +863,7 @@
         });
         // === Title Screen Fade ===
         window.addEventListener('load', () => {
+            tryPlay(openSound);
             setTimeout(() => {
                 document.getElementById('titleScreen').classList.add('hidden');
             }, 2000);

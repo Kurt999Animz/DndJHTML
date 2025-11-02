@@ -1,87 +1,387 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<title>Responsive 16:9 Container</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta charset="utf-8">
+  <title>...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    background: #000;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600&display=swap');
 
-  #container {
-    width: 1280px;
-    height: 720px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform-origin: center center;
-    box-sizing: border-box;
-  }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background: #000;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Cinzel', serif;
+      color: #fdf7e2;
+    }
 
-  .tv {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(180deg,#121212,#050505);
-    border-radius: 12px;
-    border: 6px solid #0f0f0f;
-    box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.5);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    #container {
+      width: 1280px;
+      height: 720px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      box-sizing: border-box;
+    }
 
-  #app {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.6);
-    background: #fff;
-  }
-</style>
+    .tv {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #121212, #050505);
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    #app {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      background: #000000;
+      display: none;
+      /* Hidden initially */
+    }
+
+    /* Start Menu & Character Selection */
+    #startMenu,
+    #charSelect {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 10;
+    }
+
+    .menu-button {
+      display: block;
+      background: linear-gradient(180deg, rgba(255, 223, 150, 0.78), rgba(180, 120, 60, 0.22));
+      color: #3b2618;
+      border-radius: 12px;
+      padding: 10px 16px;
+      text-align: center;
+      width: 100%;
+      max-width: 220px;
+      cursor: pointer;
+      font-family: 'MedievalSharp', cursive;
+      font-weight: 700;
+      border: 1px solid rgba(255, 230, 180, 0.12);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 10px;
+    }
+
+    .menu-button:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Character Card */
+    .guild-card {
+      width: 520px;
+      background: linear-gradient(145deg, rgba(38, 24, 12, 0.85), rgba(53, 37, 26, 0.9));
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(255, 220, 145, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      border: 2px solid rgba(255, 230, 180, 0.18);
+      color: #fdf7e2;
+      font-family: 'Cinzel', serif;
+    }
+
+    .guild-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .guild-name {
+      font-family: 'MedievalSharp', cursive;
+      font-size: 24px;
+      color: #e8c27c;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+    }
+
+    .guild-level {
+      font-size: 14px;
+      background: rgba(255, 230, 150, 0.12);
+      padding: 4px 10px;
+      border-radius: 8px;
+      color: #ffd890;
+    }
+
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 230, 180, 0.1);
+    }
+
+    .profile-section img {
+      width: 100px;
+      height: 100px;
+      border-radius: 999px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 230, 180, 0.2);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 14px;
+      color: #f7f1da;
+    }
+
+    .profile-info strong {
+      color: #e8c27c;
+      font-weight: 600;
+    }
+
+    .stats-section {
+      background: rgba(0, 0, 0, 0.15);
+      padding: 12px;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      border: 1px solid rgba(255, 230, 180, 0.08);
+    }
+
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+    }
+
+    .stat-name {
+      font-size: 12px;
+      color: #fdf7e2;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #7fd6d2;
+    }
+
+    .guild-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #ffd890;
+      padding-top: 8px;
+    }
+  </style>
 </head>
+
 <body>
 
-<div id="container">
-  <div class="tv">
-    <iframe id="app" src="try.html"></iframe>
+  <div id="container">
+    <div class="tv">
+      <iframe id="app"></iframe>
+
+      <!-- Start Menu -->
+      <div id="startMenu">
+        <div class="menu-button" onclick="goToCharSelect()">Start</div>
+      </div>
+
+      <!-- Character Selection -->
+      <div id="charSelect" style="display:none;">
+        <div class="guild-card">
+          <div class="guild-header">
+            <div class="guild-name">Kotobuki</div>
+            <div class="guild-level">Level 1 Wizard</div>
+          </div>
+          <div class="profile-section">
+            <img src="assets/profile.png" alt="Avatar">
+            <div class="profile-info">
+              <div><strong>Race:</strong> Human</div>
+              <div><strong>Class:</strong> Wizard</div>
+            </div>
+          </div>
+          <div class="stats-section">
+            <div class="stat-box">
+              <div class="stat-name">STR</div>
+              <div class="stat-value">10</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">DEX</div>
+              <div class="stat-value">12</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">CON</div>
+              <div class="stat-value">8</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">INT</div>
+              <div class="stat-value">15</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">WIS</div>
+              <div class="stat-value">14</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">CHA</div>
+              <div class="stat-value">13</div>
+            </div>
+          </div>
+          <div class="guild-footer">
+            <div>HP: 100 / 100</div>
+            <div>MP: 50 / 50</div>
+            <div>Gold: 500</div>
+          </div>
+          <div class="menu-button" onclick="selectCharacter()">Select Character</div>
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
 
-<script>
-function scaleAndCenter() {
-  const container = document.getElementById('container');
-  const targetWidth = 1280;
-  const targetHeight = 720;
+  <script>
+    // === Audio Setup ===
+    const hoverSound = new Audio('sfx/hover.mp3');
+    const clickSound = new Audio('sfx/click.wav');
+    const equipSound = new Audio('sfx/equip.mp3');
+    const dragSound = new Audio('sfx/drag.mp3');
+    const openSound = new Audio('sfx/open.mp3');
+    const bgm = new Audio('sfx/bgm.mp3'); // Background music
+    bgm.loop = true;
+    hoverSound.preload = clickSound.preload = equipSound.preload = dragSound.preload = bgm.preload = 'auto';
 
-  // Get viewport size (including mobile bars)
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
+    function tryPlay(audio) {
+      audio.currentTime = 0;
+      audio.play().catch(() => { });
+    }
 
-  // Scale to fit while maintaining 16:9
-  const scale = Math.min(vw / targetWidth, vh / targetHeight);
+    // === Scale & Center ===
+    function scaleAndCenter() {
+      const container = document.getElementById('container');
+      const targetWidth = 1280;
+      const targetHeight = 720;
 
-  container.style.transform = `translate(-50%, -50%) scale(${scale})`;
-  container.style.left = '50%';
-  container.style.top = '50%';
-}
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
 
-// Run on load and resize
-window.addEventListener('resize', scaleAndCenter);
-window.addEventListener('orientationchange', scaleAndCenter);
-scaleAndCenter();
-</script>
+      const scale = Math.min(vw / targetWidth, vh / targetHeight);
 
+      container.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      container.style.left = '50%';
+      container.style.top = '50%';
+    }
+
+    window.addEventListener('resize', scaleAndCenter);
+    window.addEventListener('orientationchange', scaleAndCenter);
+    scaleAndCenter();
+
+    // === Start -> Character Selection ===
+    function goToCharSelect() {
+       document.title = "-Character Selection-";
+      tryPlay(clickSound);
+      bgm.play().catch(() => { });
+      document.getElementById('startMenu').style.display = 'none';
+      document.getElementById('charSelect').style.display = 'flex';
+    }
+
+    // === Character Selection -> Load iframe dynamically ===
+    function selectCharacter() {
+      document.title = " ⌜Kotobuki⌟ - Level 1 Wizard ";
+      tryPlay(clickSound);
+      const iframe = document.getElementById('app');
+      if (!iframe.src) iframe.src = 'try.html'; // Load the main app
+      document.getElementById('charSelect').style.display = 'none';
+      iframe.style.display = 'block';
+    }
+
+    // === Hover sounds for buttons ===
+    document.querySelectorAll('.menu-button').forEach(btn => {
+      btn.addEventListener('mouseenter', () => tryPlay(hoverSound));
+    });
+
+    // === Drag & Drop Feedback (optional) ===
+    let draggedItem = null;
+    function handleDragStart(e) {
+      const item = e.target.closest('.item');
+      if (!item) return;
+      draggedItem = item;
+      item.classList.add('dragging');
+      tryPlay(dragSound);
+    }
+
+    function handleDragEnd(e) {
+      const item = e.target.closest('.item');
+      if (!item) return;
+      item.classList.remove('dragging');
+      draggedItem = null;
+    }
+
+    function handleSlotDrop(e, slot) {
+      e.preventDefault();
+      if (!draggedItem) return;
+      const requiredSlot = draggedItem.dataset.slot;
+      const targetSlot = slot.dataset.slot;
+      if (requiredSlot !== targetSlot) {
+        tryPlay(clickSound);
+        return;
+      }
+      slot.innerHTML = '';
+      slot.appendChild(draggedItem);
+      tryPlay(equipSound);
+      draggedItem = null;
+    }
+
+    // Select all stat-box elements
+const statBoxes = document.querySelectorAll('.stat-box');
+
+// Add an event listener to each one
+statBoxes.forEach(box => {
+    // Example: on hover
+    box.addEventListener('mouseenter', () => {
+        tryPlay(hoverSound);
+    });
+
+});
+
+  </script>
 </body>
+
 </html>
