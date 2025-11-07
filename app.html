@@ -3,532 +3,210 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Kotobuki Character Sheet (Tabbed Inventory + Equip Fix)</title>
-  <style>
-    @font-face {
-      font-family: 'custom';
-      src: url('Optien.ttf');
-    }
-
-    @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
-
-    :root {
-      --border: rgba(255, 255, 255, 0.2);
-      --text: #ffffff;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'MedievalSharp';
-      width: 1920px;
-      height: 1080px;
-      background-color: rgb(73, 51, 30);
-      color: var(--text);
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1.2fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 24px;
-      padding: 5px;
-      box-sizing: border-box;
-    }
-
-    .section {
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      padding: 0;
-    }
-
-    .upper {
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.025));
-    }
-
-    .lower {
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.025));
-    }
-
-    .profile {
-      grid-column: 1 / 2;
-      grid-row: 1 / 2;
-    }
-
-    .stats-panel {
-      grid-column: 1 / 2;
-      grid-row: 2 / 3;
-    }
-
-    .center {
-      grid-column: 2 / 3;
-      grid-row: 1 / 3;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-    }
-
-    .inventory-panel {
-      grid-column: 3 / 4;
-      grid-row: 1 / 2;
-    }
-
-    .equipment-panel {
-      grid-column: 3 / 4;
-      grid-row: 2 / 3;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .avatar-box {
-      padding: 20px;
-      display: flex;
-      gap: 14px;
-      height: 100%;
-      box-sizing: border-box;
-    }
-
-    .avatar-info {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-    }
-
-    .avatar img {
-      width: 250px;
-      height: 250px;
-      border-radius: 1000px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      object-fit: cover;
-    }
-
-    .info {
-      display: flex;
-      flex-direction: column;
-      font-size: 17px;
-      line-height: 1.4em;
-    }
-
-    .stats {
-      padding: 20px;
-      box-sizing: border-box;
-      height: 100%;
-    }
-
-    .stats h2 {
-      font-size: 20px;
-      margin: 0 0 10px 0;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .stats ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .stats li {
-      display: flex;
-      justify-content: space-between;
-      font-size: 17px;
-      margin-bottom: 8px;
-    }
-
-    .character-showcase {
-      width: 500px;
-      height: 820px;
-      background: rgba(0, 0, 0, 0.05) url('imgs/character_full.png') center/contain no-repeat;
-      border-radius: 12px;
-    }
-
-    .inventory,
-    .equipment {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      box-sizing: border-box;
-      height: 100%;
-    }
-
-    .section h2 {
-      font-size: 20px;
-      margin: 0;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .tab-btn {
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.15s;
-    }
-
-    .tab-btn.active {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .inventory-grid {
-      display: none;
-      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .inventory-grid.active {
-      display: grid;
-    }
-
-    .slot,
-    .item {
-      width: 72px;
-      height: 72px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background: rgba(255, 255, 255, 0.1);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: 0.12s;
-      box-sizing: border-box;
-      font-size: 15px;
-      color: #fff;
-    }
-
-    .slot:hover,
-    .item:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .slot img,
-    .item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-      pointer-events: none;
-    }
-
-    .equip-layout {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 40px;
-      flex: 1;
-      position: relative;
-    }
-
-    .equip-left,
-    .equip-right {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .equip-center {
-      position: relative;
-    }
-
-    .equip-center img#mini-avatar-img {
-      width: auto;
-      height: 430px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      display: block;
-    }
-
-    .equip-overlay {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: auto;
-      height: 430px;
-      pointer-events: auto;
-      display: none;
-      cursor: pointer;
-    }
-
-    .dragging {
-      opacity: 0.4;
-      transform: scale(0.92);
-      transition: transform 0.12s, opacity 0.12s;
-    }
-  </style>
+  <title>Character Sheet ⌜Kotobuki⌟</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+  <!-- Title fade-in screen -->
+  <div id="titleScreen" class="title-screen">
+    <div class="title-card">
+      <h1>Character sheet</h1>
+      <p> ⌜Kotobuki⌟</p>
+    </div>
+  </div>
 
-  <!-- Profile -->
-  <div class="section profile upper">
-    <div class="avatar-box">
-      <div class="avatar-info">
-        <div class="avatar"><img src="assets/profile.png" alt="Avatar"></div>
-        <div class="info">
-          <div><strong>Name:</strong> Kotobuki</div>
-          <div><strong>Race:</strong> Human</div>
-          <div><strong>Class:</strong> Wizard</div>
-          <div><strong>Level:</strong> 1</div>
+  <!-- === Top Bar === -->
+  <div id="topBar">
+    <div class="stat hp">
+      <span class="label">HP:</span>
+      <span class="value" id="hpCurrent">100</span> /
+      <span>
+        <span id="hpMax-base">100</span><span id="hpMax-preview" class="stat-preview"></span>
+      </span>
+      <div class="bar-container">
+        <div class="bar hp-bar" id="hpBar"></div>
+      </div>
+    </div>
+
+    <div class="stat mp">
+      <span class="label">MP:</span>
+      <span class="value" id="mpCurrent">50</span> /
+      <span>
+        <span id="mpMax-base">50</span><span id="mpMax-preview" class="stat-preview"></span>
+      </span>
+      <div class="bar-container">
+        <div class="bar mp-bar" id="mpBar"></div>
+      </div>
+    </div>
+
+    <div class="stat gold">
+      <span class="label">Gold:</span> <span id="goldAmount">500</span>
+    </div>
+  </div>
+
+  <!-- Main UI -->
+  <div class="ui-wrap" id="uiWrap">
+    <!-- Profile -->
+    <div class="section profile">
+      <div class="avatar-box">
+        <div class="avatar-info" style="display:flex; gap:18px; align-items:center;">
+          <div class="avatar">
+            <img id="profileAvatar" src="assets/profile.png" alt="Avatar" class="glow">
+          </div>
+          <div class="info">
+            <div><strong>Name:</strong> Kotobuki</div>
+            <div><strong>Race:</strong> Human</div>
+            <div><strong>Class:</strong> Wizard</div>
+            <div><strong>Level:</strong> 1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Center -->
+    <div class="section center">
+      <div class="character-showcase">
+        <div class="particles" aria-hidden="true">
+          <div class="orb"
+            style="left:48%; bottom:20%; width:10px; height:10px; animation-duration:6s; animation-delay:0s;"></div>
+          <div class="orb"
+            style="left:30%; bottom:10%; width:12px; height:12px; animation-duration:7.5s; animation-delay:1s;"></div>
+          <div class="orb"
+            style="left:70%; bottom:14%; width:8px; height:8px; animation-duration:5.5s; animation-delay:0.6s;"></div>
+          <div class="orb"
+            style="left:60%; bottom:6%; width:16px; height:16px; animation-duration:8s; animation-delay:2.2s;"></div>
+        </div>
+        <!-- Floating text element for stat increase -->
+        <div id="stat-float-text"></div>
+        <div class="portrait-wrap">
+          <div class="portrait-aura"></div>
+          <img id="centerPortrait" class="portrait" src="assets/avatar.png" alt="Kotobuki portrait">
+        </div>
+      </div>
+    </div>
+    <!-- Inventory -->
+    <div class="section inventory-panel">
+      <div class="inventory">
+        <h2>Inventory</h2>
+        <div class="tabs">
+          <div class="tab-btn active" data-tab="items">Items</div>
+          <div class="tab-btn" data-tab="armor">Armor</div>
+          <div class="tab-btn" data-tab="weapons">Weapons</div>
+          <div class="tab-btn" data-tab="consumables">Consumables</div>
+        </div>
+        <div class="inventory-grid active" id="items">
+          <div class="item" draggable="true" data-item="off-magic-book" data-slot="none">
+            <img src="assets/items/ofnsbook.png" alt="Offensive Magic Book">
+          </div>
+          <div class="item" draggable="true" data-item="def-magic-book" data-slot="none">
+            <img src="assets/items/dfnsbook.png" alt="Defensive Magic Book">
+          </div>
+          <div class="item" draggable="true" data-item="fire-magic-book" data-slot="none">
+            <img src="assets/items/firebasicbook.png" alt="Fire Magic Basics Book">
+          </div>
+          <div class="item" draggable="true" data-item="adv-ice-book" data-slot="none">
+            <img src="assets/items/iceadvancebook.png" alt="Advanced Ice Magic Book">
+          </div>
+        </div>
+        <div class="inventory-grid" id="armor">
+          <div class="item" draggable="true" data-item="hat" data-slot="head" data-overlay="assets/eqpav/hat.png">
+            <img src="assets/items/wzrdhat.png" alt="Wizard Hat">
+          </div>
+          <div class="item" draggable="true" data-item="robe" data-slot="body" data-overlay="assets/eqpav/robe.png">
+            <img src="assets/items/wzrdrobe.png" alt="Wizard Robe">
+          </div>
+          <div class="item" draggable="true" data-item="life-amulet" data-slot="accessory">
+            <img src="assets/items/lifeamulet.png" alt="Life Amulet">
+          </div>
+        </div>
+        <div class="inventory-grid" id="weapons">
+          <div class="item" draggable="true" data-item="staff" data-slot="weapon" data-overlay="assets/eqpav/stf.png">
+            <img src="assets/items/staff.png" alt="Old Ice Staff">
+          </div>
+        </div>
+        <div class="inventory-grid" id="consumables">
+          <div class="item" draggable="true" data-item="healing-potion" data-slot="none">
+            <img src="assets/items/healpt.png" alt="Healing Potion x5">
+          </div>
+          <div class="item" draggable="true" data-item="mana-potion" data-slot="none">
+            <img src="assets/items/manapt.png" alt="Mana Potion x10">
+          </div>
+          <div class="item" draggable="true" data-item="rury-leaf" data-slot="none">
+            <img src="assets/items/ruryleaf.png" alt="Rury Leaf x50">
+          </div>
+          <div class="item" draggable="true" data-item="baked-rury-pie" data-slot="none">
+            <img src="assets/items/rurypie.png" alt="Baked Rury Pie x3">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Stats -->
+    <div class="section stats-panel">
+      <div class="stats">
+        
+        <h2>Stats</h2>
+        <ul>
+          <li><span>STR</span> <span><span id="stat-STR-base">10</span><span id="stat-STR-preview"
+                class="stat-preview"></span></span></li>
+          <li><span>DEX</span> <span><span id="stat-DEX-base">12</span><span id="stat-DEX-preview"
+                class="stat-preview"></span></span></li>
+          <li><span>CON</span> <span><span id="stat-CON-base">8</span><span id="stat-CON-preview"
+                class="stat-preview"></span></span></li>
+          <li><span>INT</span> <span><span id="stat-INT-base">15</span><span id="stat-INT-preview"
+                class="stat-preview"></span></span></li>
+          <li><span>WIS</span> <span><span id="stat-WIS-base">14</span><span id="stat-WIS-preview"
+                class="stat-preview"></span></span></li>
+          <li><span>CHA</span> <span><span id="stat-CHA-base">13</span><span id="stat-CHA-preview"
+                class="stat-preview"></span></span></li>
+        </ul>
+
+        <!-- Stat Points Section -->
+        <div id="stat-points-container">
+          <span>STAT POINTS: <span id="stat-points-value">3</span></span>
+          <button id="stat-points-btn">
+            <!-- Use an img tag for your 1x1 png, I'll use a placeholder -->
+            <img src="assets/upgradebtn.png" alt="Allocate Stats" title="Allocate Stat Points">
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Equipment -->
+    <div class="section equipment-panel">
+      <div class="equipment">
+        <h2>Equipment</h2>
+        <div class="equip-layout">
+          <div class="equip-left">
+            <div class="slot" data-slot="head"></div>
+            <div class="slot" data-slot="body"></div>
+          </div>
+          <div class="equip-center">
+            <img id="mini-avatar-img" src="assets/eqpav/av.png" alt="Mini Avatar">
+            <img id="overlay-head" class="equip-overlay" data-slot="head">
+            <img id="overlay-body" class="equip-overlay" data-slot="body">
+            <img id="overlay-weapon" class="equip-overlay" data-slot="weapon">
+          </div>
+          <div class="equip-right">
+            <div class="slot" data-slot="weapon"></div>
+            <div class="slot" data-slot="accessory"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <!-- Tooltip -->
+  <div id="itemTooltip" class="item-tooltip"></div>
 
-  <!-- Center -->
-  <div class="section center">
-    <div class="character-showcase" title="Character Showcase"></div>
-  </div>
-
-  <!-- Inventory -->
-  <div class="section inventory-panel upper">
-    <div class="inventory">
-      <h2>Inventory</h2>
-
-      <!-- Tabs -->
-      <div class="tabs">
-        <div class="tab-btn active" data-tab="items">Items</div>
-        <div class="tab-btn" data-tab="armor">Armor</div>
-        <div class="tab-btn" data-tab="weapons">Weapons</div>
-        <div class="tab-btn" data-tab="consumables">Consumables</div>
-      </div>
-
-      <!-- Grids -->
-      <div class="inventory-grid active" id="items">
-        <div class="item" draggable="true" data-item="off-magic-book" data-slot="none">
-          <img src="items/book1.png" alt="Offensive Magic Book">
-        </div>
-        <div class="item" draggable="true" data-item="def-magic-book" data-slot="none">
-          <img src="items/book2.png" alt="Defensive Magic Book">
-        </div>
-        <div class="item" draggable="true" data-item="fire-magic-book" data-slot="none">
-          <img src="items/book3.png" alt="Fire Magic Basics Book">
-        </div>
-        <div class="item" draggable="true" data-item="adv-ice-book" data-slot="none">
-          <img src="items/book4.png" alt="Advanced Ice Magic Book">
-        </div>
-      </div>
-
-      <div class="inventory-grid" id="armor">
-        <div class="item" draggable="true" data-item="hat" data-slot="head" data-overlay="assets/eqpav/hat.png">
-          <img src="items/hat.png" alt="Wizard Hat">
-        </div>
-        <div class="item" draggable="true" data-item="robe" data-slot="body" data-overlay="assets/eqpav/robe.png">
-          <img src="items/robe.png" alt="Wizard Robe">
-        </div>
-        <div class="item" draggable="true" data-item="life-amulet" data-slot="accessory">
-          <img src="items/amulet.png" alt="Life Amulet">
-        </div>
-      </div>
-
-      <div class="inventory-grid" id="weapons">
-        <div class="item" draggable="true" data-item="staff" data-slot="weapon" data-overlay="assets/eqpav/stf.png">
-          <img src="items/staff.png" alt="Old Ice Staff">
-        </div>
-      </div>
-
-      <div class="inventory-grid" id="consumables">
-        <div class="item" draggable="true" data-item="healing-potion" data-slot="none">
-          <img src="items/heal_potion.png" alt="Healing Potion x5">
-        </div>
-        <div class="item" draggable="true" data-item="mana-potion" data-slot="none">
-          <img src="items/mana_potion.png" alt="Mana Potion x10">
-        </div>
-        <div class="item" draggable="true" data-item="rury-leaf" data-slot="none">
-          <img src="items/leaf.png" alt="Rury Leaf x50">
-        </div>
-        <div class="item" draggable="true" data-item="baked-rury-pie" data-slot="none">
-          <img src="items/pie.png" alt="Baked Rury Pie x3">
-        </div>
-      </div>
-
+  <!-- Stat Allocation Popup -->
+  <div id="statAllocateOverlay" class="overlay-screen">
+    <div id="stat-allocate-list">
+      <!-- Options will be generated by JS -->
     </div>
   </div>
 
-  <!-- Stats -->
-  <div class="section stats-panel lower">
-    <div class="stats">
-      <h2>Stats</h2>
-      <ul>
-        <li><span>STR</span> <span>10</span></li>
-        <li><span>DEX</span> <span>12</span></li>
-        <li><span>CON</span> <span>8</span></li>
-        <li><span>INT</span> <span>15</span></li>
-        <li><span>WIS</span> <span>14</span></li>
-        <li><span>CHA</span> <span>13</span></li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Equipment -->
-  <div class="section equipment-panel lower">
-    <div class="equipment">
-      <h2>Equipment</h2>
-      <div class="equip-layout">
-        <div class="equip-left">
-          <div class="slot" data-slot="head"></div>
-          <div class="slot" data-slot="body"></div>
-        </div>
-
-        <div class="equip-center">
-          <img id="mini-avatar-img" src="assets/eqpav/av.png" alt="Mini Avatar">
-          <img id="overlay-head" class="equip-overlay" data-slot="head">
-          <img id="overlay-body" class="equip-overlay" data-slot="body">
-          <img id="overlay-weapon" class="equip-overlay" data-slot="weapon">
-        </div>
-
-        <div class="equip-right">
-          <div class="slot" data-slot="weapon"></div>
-          <div class="slot" data-slot="accessory"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script>
-    const equipSound = new Audio('sfx/equip.mp3');
-    equipSound.preload = 'auto';
-    function playEquipSound() {
-      equipSound.currentTime = 0;
-      equipSound.play().catch(() => { });
-    }
-
-    // Tabs
-    const tabs = document.querySelectorAll('.tab-btn');
-    const grids = document.querySelectorAll('.inventory-grid');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        grids.forEach(g => g.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
-      });
-    });
-
-    const allItems = document.querySelectorAll('.item');
-    const allSlots = document.querySelectorAll('.slot');
-    const overlays = {
-      head: document.getElementById('overlay-head'),
-      body: document.getElementById('overlay-body'),
-      weapon: document.getElementById('overlay-weapon'),
-      accessory: null // no overlay for accessory
-    };
-
-    let draggedItem = null;
-
-    // Make items draggable
-    allItems.forEach(item => {
-      item.addEventListener('dragstart', e => {
-        draggedItem = item;
-        item.classList.add('dragging');
-      });
-      item.addEventListener('dragend', () => {
-        item.classList.remove('dragging');
-        draggedItem = null;
-      });
-    });
-
-    // Equip slots
-    allSlots.forEach(slot => {
-      slot.addEventListener('dragover', e => e.preventDefault());
-      slot.addEventListener('drop', e => {
-        e.preventDefault();
-        if (!draggedItem) return;
-
-        const slotType = slot.dataset.slot;
-        const itemSlot = draggedItem.dataset.slot;
-        if (slotType !== itemSlot) return;
-
-        // Remove from old slot if exists
-        const oldSlot = draggedItem.closest('.slot');
-        if (oldSlot && overlays[oldSlot.dataset.slot])
-          overlays[oldSlot.dataset.slot].style.display = 'none';
-
-        // Replace existing item in slot
-        const existing = slot.querySelector('.item');
-        if (existing) {
-          const category =
-            slotType === 'head' || slotType === 'body' ? 'armor' :
-              slotType === 'weapon' ? 'weapons' :
-                slotType === 'accessory' ? 'accessories' : 'items';
-          const invGrid = document.getElementById(category);
-          invGrid.appendChild(existing);
-        }
-
-        // Equip dragged item
-        slot.appendChild(draggedItem);
-
-        // Show overlay if exists
-        if (overlays[slotType]) {
-          overlays[slotType].src = draggedItem.dataset.overlay;
-          overlays[slotType].style.display = 'block';
-        }
-
-        playEquipSound();
-      });
-    });
-
-    // Inventory grids
-    grids.forEach(grid => {
-      grid.style.minHeight = '100px';
-      grid.addEventListener('dragover', e => e.preventDefault());
-      grid.addEventListener('drop', e => {
-        e.preventDefault();
-        if (!draggedItem) return;
-
-        const oldSlot = draggedItem.closest('.slot');
-        const wasEquipped = oldSlot && overlays[oldSlot.dataset.slot];
-
-        // Hide overlay if coming from equipped slot
-        if (wasEquipped)
-          overlays[oldSlot.dataset.slot].style.display = 'none';
-
-        grid.appendChild(draggedItem);
-        draggedItem.classList.remove('dragging');
-
-        if (wasEquipped) playEquipSound();
-      });
-    });
-
-    // Unequip by clicking overlay
-    Object.keys(overlays).forEach(slotType => {
-      const ov = overlays[slotType];
-      if (!ov) return; // skip accessory, no overlay
-
-      ov.addEventListener('click', () => {
-        ov.style.display = 'none';
-        const slot = document.querySelector(`.slot[data-slot="${slotType}"]`);
-        const item = slot.querySelector('.item');
-        if (!item) return;
-
-        const category =
-          slotType === 'head' || slotType === 'body' ? 'armor' :
-            slotType === 'weapon' ? 'weapons' : 'items';
-
-        const invGrid = document.getElementById(category);
-        invGrid.appendChild(item);
-        item.classList.remove('dragging');
-        playEquipSound();
-
-        // Switch tab to that category
-        tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === category));
-        grids.forEach(g => g.classList.toggle('active', g.id === category));
-      });
-    });
-  </script>
-
-
-
+  <!-- Scripts -->
+  <script src="script.js"></script>
 </body>
 
 </html>

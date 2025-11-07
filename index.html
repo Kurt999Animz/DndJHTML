@@ -66,12 +66,26 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.95);
+      background-color: #000;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
       z-index: 10;
+      overflow: hidden;
+      /* important: keep pseudo-element contained */
+    }
+
+    #startMenu::after,
+    #charSelect::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("assets/smoke.gif") center/cover no-repeat;
+      opacity: 0.5;
+      z-index: -1;
+      pointer-events: none;
+
     }
 
     .menu-button {
@@ -281,12 +295,9 @@
     // === Audio Setup ===
     const hoverSound = new Audio('sfx/hover.mp3');
     const clickSound = new Audio('sfx/click.wav');
-    const equipSound = new Audio('sfx/equip.mp3');
-    const dragSound = new Audio('sfx/drag.mp3');
-    const openSound = new Audio('sfx/open.mp3');
     const bgm = new Audio('sfx/bgm.mp3'); // Background music
     bgm.loop = true;
-    hoverSound.preload = clickSound.preload = equipSound.preload = dragSound.preload = bgm.preload = 'auto';
+    hoverSound.preload = clickSound.preload = bgm.preload = 'auto';
 
     function tryPlay(audio) {
       audio.currentTime = 0;
@@ -315,7 +326,7 @@
 
     // === Start -> Character Selection ===
     function goToCharSelect() {
-       document.title = "-Character Selection-";
+      document.title = "-Character Selection-";
       tryPlay(clickSound);
       bgm.play().catch(() => { });
       document.getElementById('startMenu').style.display = 'none';
@@ -327,7 +338,7 @@
       document.title = " ⌜Kotobuki⌟ - Level 1 Wizard ";
       tryPlay(clickSound);
       const iframe = document.getElementById('app');
-      if (!iframe.src) iframe.src = 'try.html'; // Load the main app
+      if (!iframe.src) iframe.src = 'app.html'; // Load the main app
       document.getElementById('charSelect').style.display = 'none';
       iframe.style.display = 'block';
     }
@@ -370,16 +381,16 @@
     }
 
     // Select all stat-box elements
-const statBoxes = document.querySelectorAll('.stat-box');
+    const statBoxes = document.querySelectorAll('.stat-box');
 
-// Add an event listener to each one
-statBoxes.forEach(box => {
-    // Example: on hover
-    box.addEventListener('mouseenter', () => {
+    // Add an event listener to each one
+    statBoxes.forEach(box => {
+      // Example: on hover
+      box.addEventListener('mouseenter', () => {
         tryPlay(hoverSound);
-    });
+      });
 
-});
+    });
 
   </script>
 </body>
