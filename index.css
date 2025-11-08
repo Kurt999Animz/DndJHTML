@@ -1,0 +1,258 @@
+    @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600&display=swap');
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        background: #000;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Cinzel', serif;
+        color: #fdf7e2;
+    }
+
+    #container {
+        width: 1280px;
+        height: 720px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center center;
+        box-sizing: border-box;
+    }
+
+    .tv {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #121212, #050505);
+        border-radius: 12px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    #app {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        background: #000000;
+        display: none;
+        /* Hidden initially */
+    }
+
+    /* Start Menu & Character Selection */
+    #startMenu,
+    #charSelect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 10;
+        overflow: hidden;
+        /* important: keep pseudo-element contained */
+    }
+
+    #startMenu::after,
+    #charSelect::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("assets/smoke.gif") center/cover no-repeat;
+        opacity: 0.5;
+        z-index: -1;
+        pointer-events: none;
+
+    }
+
+    .menu-button {
+        display: block;
+        background: linear-gradient(180deg, rgba(255, 223, 150, 0.78), rgba(180, 120, 60, 0.22));
+        color: #3b2618;
+        border-radius: 12px;
+        padding: 10px 16px;
+        text-align: center;
+        width: 100%;
+        max-width: 220px;
+        cursor: pointer;
+        font-family: 'MedievalSharp', cursive;
+        font-weight: 700;
+        border: 1px solid rgba(255, 230, 180, 0.12);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 10px;
+    }
+
+    .menu-button:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Character Card */
+    .guild-card {
+        width: 520px;
+        background: linear-gradient(145deg, rgba(38, 24, 12, 0.85), rgba(53, 37, 26, 0.9));
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(255, 220, 145, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        border: 2px solid rgba(255, 230, 180, 0.18);
+        color: #fdf7e2;
+        font-family: 'Cinzel', serif;
+        transition: filter 0.3s, opacity 0.3s;
+    }
+
+    .guild-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .guild-name {
+        font-family: 'MedievalSharp', cursive;
+        font-size: 24px;
+        color: #e8c27c;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+    }
+
+    .guild-level {
+        font-size: 14px;
+        background: rgba(255, 230, 150, 0.12);
+        padding: 4px 10px;
+        border-radius: 8px;
+        color: #ffd890;
+    }
+
+    .profile-section {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 230, 180, 0.1);
+    }
+
+    .profile-section img {
+        width: 100px;
+        height: 100px;
+        border-radius: 999px;
+        object-fit: cover;
+        border: 2px solid rgba(255, 230, 180, 0.2);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .profile-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 14px;
+        color: #f7f1da;
+    }
+
+    .profile-info strong {
+        color: #e8c27c;
+        font-weight: 600;
+    }
+
+    .stats-section {
+        background: rgba(0, 0, 0, 0.15);
+        padding: 12px;
+        border-radius: 12px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        border: 1px solid rgba(255, 230, 180, 0.08);
+    }
+
+    .stat-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+    }
+
+    .stat-name {
+        font-size: 12px;
+        color: #fdf7e2;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        margin-bottom: 4px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+        font-weight: 600;
+        color: #7fd6d2;
+    }
+
+    .guild-footer {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #ffd890;
+        padding-top: 8px;
+    }
+
+    /* === Locked Character Card === */
+    .guild-card.locked {
+        filter: grayscale(80%);
+        opacity: 0.7;
+    }
+
+    .guild-card.locked .menu-button {
+        background: linear-gradient(180deg, rgba(100, 100, 100, 0.78), rgba(60, 60, 60, 0.22));
+        color: #aaa;
+        cursor: not-allowed;
+        border-color: rgba(150, 150, 150, 0.12);
+    }
+
+    .guild-card.locked .menu-button:hover {
+        transform: none;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    /* === Locked Message Popup === */
+    #lockedMessage {
+        display: none;
+        /* Hidden by default */
+        position: absolute;
+        bottom: 40px;
+        /* Positioned inside the .tv container */
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.85);
+        color: #ff6b6b;
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 8px;
+        border: 1px solid #ff6b6b;
+        box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
+        z-index: 100;
+        text-align: center;
+    }
